@@ -25,12 +25,12 @@ class Player:
         self.bombs = []
 
     @staticmethod
-    def check_collision(next_position, board):
-        matrix_pos = Stage.screen_pos_to_matrix(next_position[0], next_position[1])
+    def check_collision(next_position, board, direction):
+        matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], direction)
         return board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR
 
     def move_left(self, frames, board):
-        if self.check_collision((self.position[0] - self.speed, self.position[1]), board):
+        if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0)):
             self.position[0] -= self.speed
 
         self.frame_index[0] = 4 if frames % 3 == 0 else 5 if frames % 4 == 0 else self.frame_index[0]
@@ -38,7 +38,7 @@ class Player:
         self.last_state = 0
 
     def move_right(self, frames, board):
-        if self.check_collision((self.position[0] + self.speed, self.position[1]), board):
+        if self.check_collision((self.position[0] + self.speed, self.position[1]), board, (1, 0)):
             self.position[0] += self.speed
 
         self.frame_index[0] = 1 if frames % 3 == 0 else 2 if frames % 4 == 0 else self.frame_index[0]
@@ -46,7 +46,7 @@ class Player:
         self.last_state = 1
 
     def move_up(self, frames, board):
-        if self.check_collision((self.position[0], self.position[1] - self.speed), board):
+        if self.check_collision((self.position[0], self.position[1] - self.speed), board, (0, -1)):
             self.position[1] -= self.speed
 
         self.frame_index[0] = 0 if frames % 3 == 0 else 2 if frames % 4 == 0 else self.frame_index[0]
@@ -54,7 +54,7 @@ class Player:
         self.last_state = 2
 
     def move_down(self, frames, board):
-        if self.check_collision((self.position[0], self.position[1] + self.speed), board):
+        if self.check_collision((self.position[0], self.position[1] + self.speed), board, (0, 1)):
             self.position[1] += self.speed
 
         self.frame_index[0] = 3 if frames % 3 == 0 else 5 if frames % 4 == 0 else self.frame_index[0]

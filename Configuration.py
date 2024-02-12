@@ -9,8 +9,8 @@ class Configuration:
         return Configuration.__instance
 
     def __init__(self):
-        self.screen_height = 920
-        self.screen_width = 920
+        self.screen_height = 720
+        self.screen_width = 1280
         self.game_fps = 60
         self.cell_size = (16 * 3, 48)
         self.board_size = (19, 15)

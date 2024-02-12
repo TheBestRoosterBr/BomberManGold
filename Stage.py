@@ -1,3 +1,4 @@
+import math
 import random
 
 import pygame
@@ -29,7 +30,8 @@ def create_board():
         for j in range(len(board)):
             if board[j][i] == BlockStatus.CLEAR:
                 if random.randint(1, 20) < 19:
-                    board[j][i] = BlockStatus.DESTRUCTIBLE_WALL
+                    #board[j][i] = BlockStatus.DESTRUCTIBLE_WALL
+                    pass
             elif board[j][i] == 3:
                 board[j][i] = BlockStatus.CLEAR
     return board
@@ -41,8 +43,25 @@ def screen_pos_to_matrix(screen_x, screen_y):
     offset_x = config.offset_x
     offset_y = config.offset_y
 
-    i = (screen_y - offset_y) // cell_size
-    j = (screen_x - offset_x) // cell_size
+    i = (screen_y - offset_y) / cell_size
+    j = (screen_x - offset_x) / cell_size
+
+    i = round(i)
+    j = round(j)
+
+    return i, j
+
+
+def screen_pos_to_matrix_movimentation(screen_x, screen_y, direction):
+    config = Configuration.get_config()
+    cell_size = config.cell_size[0]
+    offset_x = config.offset_x
+    offset_y = config.offset_y
+
+    i = (screen_y - offset_y) / cell_size
+    j = (screen_x - offset_x) / cell_size
+    i = round(i)
+    j = round(j)
 
     return i, j
 
