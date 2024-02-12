@@ -25,6 +25,9 @@ class Game:
             if event.type == pygame.QUIT:
                 self.is_running = False
                 pygame.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_j:
+                    self.player.put_bomb()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
@@ -43,10 +46,9 @@ class Game:
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.stage.draw(self.screen)
-        self.player.draw(self.screen)
+        self.player.update(self.screen)
         pygame.display.update()
         self.clock.tick(self.config.game_fps)
-
 
     def run(self):
         while self.is_running:
