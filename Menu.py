@@ -5,7 +5,7 @@ from Configuration import Configuration
 
 class MenuInicial:
     def __init__(self, screen):
-        config = Configuration()
+        config = Configuration.get_config()
         self.width = config.screen_width
         self.height = config.screen_height
         original_background = pygame.image.load("Assets/background.jpg")
