@@ -1,6 +1,8 @@
 import pygame
 from Menu import MenuInicial
 
+from Game import Game
+
 
 class App:
     def __init__(self):
@@ -11,4 +13,3 @@ class App:
     def run(self):
         menu = MenuInicial(self.screen)
         menu.main_loop()
-
