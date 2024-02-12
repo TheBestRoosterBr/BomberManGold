@@ -9,7 +9,9 @@ class App:
         pygame.init()
         self.isRunning = True
         self.screen = pygame.display.set_mode((800, 600))
+        self.game = Game(self.screen)
 
     def run(self):
         menu = MenuInicial(self.screen)
-        menu.main_loop()
+        #menu.main_loop()
+        self.game.run()
