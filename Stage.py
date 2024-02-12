@@ -23,9 +23,11 @@ def create_board():
         (0, 0),
         (1, 0),
         (0, 1),
+
         (0, 12),
         (0, 11),
         (1, 12),
+
         (8, 0),
         (8, 1),
         (7, 0),
@@ -41,9 +43,8 @@ def create_board():
 
     for i in range(len(board[0])):
         for j in range(len(board)):
-            if not cannot_have_blocks.__contains__((i, j)) and board[j][i] == BlockStatus.CLEAR:
-                value = random.randint(1, 20)
-                if value < 17:
+            if not cannot_have_blocks.__contains__((j, i)) and board[j][i] == BlockStatus.CLEAR:
+                if random.randint(1, 20) < 19:
                     board[j][i] = BlockStatus.DESTRUCTIBLE_WALL
     return board
 
