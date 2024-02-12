@@ -11,7 +11,6 @@ class Player:
         self.lives = 1
         self.Name = "BomberManFodase"
         pos = Stage.matrix_to_screen_pos(1, 1)
-        self.frames = 0
         self.position = [pos[0], pos[1]]
         self.power_ups = []
         self.sprite = pygame.image.load('Assets/player.png')
@@ -20,7 +19,7 @@ class Player:
         self.frame_index = [0, 0]
         self.last_state = 0  # 0 for left, 1 for right, 2 for up, and 3 for down
         self.speed = 2
-        self.max_bombs = 3
+        self.max_bombs = 1
         self.active_bombs = 0
         self.bomb_power = 5
         self.bombs = []
@@ -30,17 +29,11 @@ class Player:
         matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], direction)
         return board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR
 
-    def move_left(self, board):
-        self.frames += 1
+    def move_left(self, frames, board):
         if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0)):
             self.position[0] -= self.speed
 
-        if self.frames % (Configuration.get_config().game_fps/10) == 0:
-            if self.frame_index[0] == 4:
-                self.frame_index[0] = 5
-            else:
-                self.frame_index[0] = 4
-
+        self.frame_index[0] = 4 if frames % 3 == 0 else 5 if frames % 4 == 0 else self.frame_index[0]
         self.frame_index[1] = 0
         self.last_state = 0
 
@@ -48,7 +41,7 @@ class Player:
         if self.check_collision((self.position[0] + self.speed, self.position[1]), board, (1, 0)):
             self.position[0] += self.speed
 
-        self.frame_index[0] = 1 if frames % 3 == 0 else 2
+        self.frame_index[0] = 1 if frames % 3 == 0 else 2 if frames % 4 == 0 else self.frame_index[0]
         self.frame_index[1] = 1
         self.last_state = 1
 
@@ -56,7 +49,7 @@ class Player:
         if self.check_collision((self.position[0], self.position[1] - self.speed), board, (0, -1)):
             self.position[1] -= self.speed
 
-        self.frame_index[0] = 0 if frames % 3 == 0 else 2
+        self.frame_index[0] = 0 if frames % 3 == 0 else 2 if frames % 4 == 0 else self.frame_index[0]
         self.frame_index[1] = 0
         self.last_state = 2
 
@@ -64,7 +57,7 @@ class Player:
         if self.check_collision((self.position[0], self.position[1] + self.speed), board, (0, 1)):
             self.position[1] += self.speed
 
-        self.frame_index[0] = 3 if frames % 3 == 0 else 5
+        self.frame_index[0] = 3 if frames % 3 == 0 else 5 if frames % 4 == 0 else self.frame_index[0]
         self.frame_index[1] = 1
         self.last_state = 3
 
@@ -106,7 +99,7 @@ class Player:
         frame = self.sprite.subsurface((self.frame_index[0] * self.frame_width, self.frame_index[1] * self.frame_height,
                                         self.frame_width, self.frame_height))
         frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
-        screen.blit(frame, (self.position[0] - self.frame_width/2, self.position[1] - self.frame_height/2))
+        screen.blit(frame, (self.position[0], self.position[1]))
 
 
 
