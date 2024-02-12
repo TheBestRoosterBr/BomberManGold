@@ -30,7 +30,7 @@ class Bomba:
             self.draw(screen)
 
     def explode(self, screen):
-        if self.frames % (Configuration.get_config().game_fps/6) == 0:
+        if self.frames % (Configuration.get_config().game_fps/10) == 0:
             self.explosion_index[1] += 1
         if self.explosion_index[1] >= 3:
             self.is_exploded = True

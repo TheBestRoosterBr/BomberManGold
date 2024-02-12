@@ -58,6 +58,9 @@ def screen_pos_to_matrix_movimentation(screen_x, screen_y, direction):
     offset_x = config.offset_x
     offset_y = config.offset_y
 
+    screen_x = screen_x + (direction[0] * cell_size/2)
+    screen_y = screen_y + (direction[1] * cell_size/2)
+
     i = (screen_y - offset_y) / cell_size
     j = (screen_x - offset_x) / cell_size
     i = round(i)
