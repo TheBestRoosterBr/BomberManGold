@@ -1,16 +1,19 @@
 import pygame.display
 
+import Configuration
 from Player import Player
 from Stage import *
 
 
 class Game:
     def __init__(self, screen):
+        self.config = Configuration.get_config()
         self.screen = screen
         self.stage = Stage()
         self.player = Player()
         self.is_running = True
         self.frames = 0
+        self.clock = pygame.time.Clock()
 
     def update(self):
         #Simplesmente um if que n serve pra nada. TODO: um timer pra não ficar rápido
@@ -42,6 +45,8 @@ class Game:
         self.stage.draw(self.screen)
         self.player.draw(self.screen)
         pygame.display.update()
+        self.clock.tick(self.config.game_fps)
+
 
     def run(self):
         while self.is_running:
