@@ -28,13 +28,13 @@ class Game:
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            self.player.move_left(self.frames)
+            self.player.move_left(self.frames, self.stage.board)
         elif keys[pygame.K_d]:
-            self.player.move_right(self.frames)
+            self.player.move_right(self.frames, self.stage.board)
         elif keys[pygame.K_s]:
-            self.player.move_down(self.frames)
+            self.player.move_down(self.frames, self.stage.board)
         elif keys[pygame.K_w]:
-            self.player.move_up(self.frames)
+            self.player.move_up(self.frames, self.stage.board)
         else:
             self.player.stop()
 

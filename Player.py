@@ -1,4 +1,7 @@
 import pygame
+
+import Stage
+from BlockStatus import BlockStatus
 from Configuration import Configuration
 
 class Player:
@@ -6,7 +9,8 @@ class Player:
         self.score = 0
         self.lives = 1
         self.Name = "BomberManFodase"
-        self.position = [0, 0]
+        pos = Stage.matrix_to_screen_pos(1, 1)
+        self.position = [pos[0], pos[1]]
         self.power_ups = []
         self.sprite = pygame.image.load('Assets/player.png')
         self.frame_width = 16
@@ -15,26 +19,39 @@ class Player:
         self.last_state = 0  # 0 for left, 1 for right, 2 for up, and 3 for down
         self.speed = 2
 
-    def move_left(self, frames):
-        self.position[0] -= self.speed
+    @staticmethod
+    def check_collision(next_position, board):
+        matrix_pos = Stage.screen_pos_to_matrix(next_position[0], next_position[1])
+        return board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR
+
+    def move_left(self, frames, board):
+        if self.check_collision((self.position[0] - self.speed, self.position[1]), board):
+            self.position[0] -= self.speed
+
         self.frame_index[0] = 4 if frames % 2 == 0 else 5
         self.frame_index[1] = 0
         self.last_state = 0
 
-    def move_right(self, frames):
-        self.position[0] += self.speed
+    def move_right(self, frames, board):
+        if self.check_collision((self.position[0] + self.speed, self.position[1]), board):
+            self.position[0] += self.speed
+
         self.frame_index[0] = 1 if frames % 2 == 0 else 2
         self.frame_index[1] = 1
         self.last_state = 1
 
-    def move_up(self, frames):
-        self.position[1] -= self.speed
+    def move_up(self, frames, board):
+        if self.check_collision((self.position[0], self.position[1] - self.speed), board):
+            self.position[1] -= self.speed
+
         self.frame_index[0] = 0 if frames % 2 == 0 else 2
         self.frame_index[1] = 0
         self.last_state = 2
 
-    def move_down(self, frames):
-        self.position[1] += self.speed
+    def move_down(self, frames, board):
+        if self.check_collision((self.position[0], self.position[1] + self.speed), board):
+            self.position[1] += self.speed
+
         self.frame_index[0] = 3 if frames % 2 == 0 else 5
         self.frame_index[1] = 1
         self.last_state = 3
