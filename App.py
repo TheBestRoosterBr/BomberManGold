@@ -1,10 +1,10 @@
 import pygame
 
+
 class App:
     def __init__(self):
         pygame.init()
         self.isRunning = True
-
 
     def run(self):
         while self.isRunning:
