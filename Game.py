@@ -1,15 +1,16 @@
 import pygame.display
 
 import Configuration
+import Stage
 from Player import Player
-from Stage import *
+import Stage
 
 
 class Game:
     def __init__(self, screen):
-        self.config = Configuration.get_config()
+        self.config = Configuration.Configuration.get_config()
         self.screen = screen
-        self.stage = Stage()
+        self.stage = Stage.stage
         self.player = Player()
         self.is_running = True
         self.frames = 0

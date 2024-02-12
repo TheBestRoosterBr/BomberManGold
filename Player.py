@@ -20,7 +20,7 @@ class Player:
         self.frame_index = [0, 0]
         self.last_state = 0  # 0 for left, 1 for right, 2 for up, and 3 for down
         self.speed = 2
-        self.max_bombs = 1
+        self.max_bombs = 3
         self.active_bombs = 0
         self.bomb_power = 5
         self.bombs = []

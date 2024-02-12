@@ -17,4 +17,3 @@ class Configuration:
 
         self.offset_x = (self.screen_width - self.cell_size[0] * self.board_size[0]) / 2
         self.offset_y = (self.screen_height - self.cell_size[1] * self.board_size[1]) / 2
-

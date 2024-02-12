@@ -1,7 +1,7 @@
 import pygame
 import Stage
+from BlockStatus import BlockStatus
 from Configuration import Configuration
-
 
 class Bomba:
     def __init__(self, bomb_power, x, y):
@@ -43,41 +43,80 @@ class Bomba:
         # Up
         for i in range(1, self.power):
             position = self.position[0] - i
-            index = 2 if i == self.power - 1 else 1
-            spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
-                                                    self.frame_size, self.frame_size))
-            rotated_spr = pygame.transform.rotate(spr, 90)
-            rotated_spr = pygame.transform.scale(rotated_spr, Configuration.get_config().cell_size)
-            screen.blit(rotated_spr, Stage.matrix_to_screen_pos(position, self.position[1]))
+            next_block = Stage.stage.board[position][self.position[1]]
+
+            if next_block == BlockStatus.WALL or next_block & 0b1000000 == 0b1000000:
+                break
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+                Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
+                break
+            elif next_block == BlockStatus.CLEAR:
+                index = 2 if i == self.power - 1 else 1
+                spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
+                                                        self.frame_size, self.frame_size))
+                rotated_spr = pygame.transform.rotate(spr, 90)
+                rotated_spr = pygame.transform.scale(rotated_spr, Configuration.get_config().cell_size)
+                screen.blit(rotated_spr, Stage.matrix_to_screen_pos(position, self.position[1]))
+
         # Down
         for i in range(1, self.power):
             position = self.position[0] + i
-            index = 2 if i == self.power - 1 else 1
-            spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
-                                                    self.frame_size, self.frame_size))
-            rotated_spr = pygame.transform.rotate(spr, -90)
-            rotated_spr = pygame.transform.scale(rotated_spr, Configuration.get_config().cell_size)
-            screen.blit(rotated_spr, Stage.matrix_to_screen_pos(position, self.position[1]))
+            next_block = Stage.stage.board[position][self.position[1]]
+
+            if next_block == BlockStatus.WALL or next_block & 0b1000000 == 0b1000000:
+                break
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+                Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
+                break
+            elif next_block == BlockStatus.CLEAR:
+
+                index = 2 if i == self.power - 1 else 1
+                spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
+                                                        self.frame_size, self.frame_size))
+                rotated_spr = pygame.transform.rotate(spr, -90)
+                rotated_spr = pygame.transform.scale(rotated_spr, Configuration.get_config().cell_size)
+                screen.blit(rotated_spr, Stage.matrix_to_screen_pos(position, self.position[1]))
 
         # Right
         for i in range(1, self.power):
             position = self.position[1] - i
-            index = 2 if i == self.power - 1 else 1
-            spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
-                                                    self.frame_size, self.frame_size))
+            next_block = Stage.stage.board[self.position[0]][position]
 
-            spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
-            screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], position))
+            if next_block == BlockStatus.WALL or next_block & 0b1000000 == 0b1000000:
+                break
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+                Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
+                break
+            elif next_block == BlockStatus.CLEAR:
+                position = self.position[1] - i
+                index = 2 if i == self.power - 1 else 1
+                spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
+                                                        self.frame_size, self.frame_size))
+                if index == 2:
+                    spr = pygame.transform.rotate(spr, 180)
+                spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
+                screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], position))
 
         # Left
         for i in range(1, self.power):
             position = self.position[1] + i
-            index = 2 if i == self.power - 1 else 1
-            spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
-                                                    self.frame_size, self.frame_size))
-            rotated_spr = pygame.transform.rotate(spr, -180)
-            rotated_spr = pygame.transform.scale(rotated_spr, Configuration.get_config().cell_size)
-            screen.blit(rotated_spr, Stage.matrix_to_screen_pos(self.position[0], position))
+            next_block = Stage.stage.board[self.position[0]][position]
+
+            if next_block == BlockStatus.WALL or next_block & 0b1000000 == 0b1000000:
+                break
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+                Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
+                break
+            elif next_block == BlockStatus.CLEAR:
+                position = self.position[1] + i
+                index = 2 if i == self.power - 1 else 1
+                spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
+                                                        self.frame_size, self.frame_size))
+
+                if index == 1:
+                    spr = pygame.transform.rotate(spr, 180)
+                spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
+                screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], position))
 
     def draw(self, screen):
         frame = self.sprite.subsurface((self.frame_index * self.frame_size, 0, self.frame_size, self.frame_size))
