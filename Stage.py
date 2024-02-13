@@ -1,8 +1,6 @@
 import math
 import random
-
 import pygame
-
 from Configuration import Configuration
 from BlockStatus import BlockStatus
 
@@ -125,10 +123,6 @@ class Stage:
                             self.board[i][j] = 0
                         else:
                             self.board[i][j] = self.bloco_explodindo_index[index + 1]
-
-
-
-
 
 
 stage = Stage()
