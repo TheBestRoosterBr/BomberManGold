@@ -32,7 +32,7 @@ class Game:
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            self.player.move_left(self.stage.board)
+            self.player.move_left(self.frames,self.stage.board)
         elif keys[pygame.K_d]:
             self.player.move_right(self.frames, self.stage.board)
         elif keys[pygame.K_s]:

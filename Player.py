@@ -33,7 +33,7 @@ class Player:
         if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0)):
             self.position[0] -= self.speed
 
-        self.frame_index[0] = 4 if frames % 3 == 0 else 5 if frames % 4 == 0 else self.frame_index[0]
+        self.frame_index[0] = 4 if frames % 3 == 0 else 5
         self.frame_index[1] = 0
         self.last_state = 0
 
