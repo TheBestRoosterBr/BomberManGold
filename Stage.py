@@ -100,6 +100,8 @@ class Stage:
                                                        self.config.cell_size)
         self.spr_lucky_block = pygame.transform.scale(pygame.image.load("Assets/brickBlockFase2.png"),
                                                       self.config.cell_size)
+        self.spr_chave = pygame.transform.scale(pygame.image.load("Assets/cadeado.png"),
+                                                      self.config.cell_size)
         self.bloco_explodindo_index = [
             0b1000000,
             0b1100000,
@@ -123,12 +125,14 @@ class Stage:
         self.power_ups = []
         self.background_color = (0, 100, 0)
 
-    def draw(self, screen):
+    def draw(self, screen, lucky_block_position=(0, 0)):
 
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 position = (self.config.cell_size[1] * j + self.config.offset_x, self.config.cell_size[0] * i + self.config.offset_y)
-                if self.board[i][j] == BlockStatus.CLEAR or self.board[i][j] == BlockStatus.BOMBA or self.board[i][j] == BlockStatus.FIRE:
+                if (i, j) == lucky_block_position and self.board[i][j] == BlockStatus.LUCKY_BLOCK:
+                    screen.blit(self.spr_lucky_block, position)
+                elif self.board[i][j] == BlockStatus.CLEAR or self.board[i][j] == BlockStatus.BOMBA or self.board[i][j] == BlockStatus.FIRE:
                     pygame.draw.rect(screen, self.background_color, pygame.Rect(position, self.config.cell_size), 0)
                 elif self.board[i][j] == BlockStatus.PORTAL_FECHADO:
                     pygame.draw.rect(screen, self.background_color, pygame.Rect(position, self.config.cell_size), 0)
@@ -136,8 +140,9 @@ class Stage:
                 elif self.board[i][j] == BlockStatus.PORTAL_ABERTO:
                     pygame.draw.rect(screen, self.background_color, pygame.Rect(position, self.config.cell_size), 0)
                     screen.blit(self.spr_porta_aberta, position)
-                elif self.board[i][j] == BlockStatus.LUCKY_BLOCK:
-                    screen.blit(self.spr_lucky_block, position)
+                elif self.board[i][j] == BlockStatus.CHAVE:
+                    pygame.draw.rect(screen, self.background_color, pygame.Rect(position, self.config.cell_size), 0)
+                    screen.blit(self.spr_chave, position)
                 elif self.board[i][j] == BlockStatus.WALL:
                     screen.blit(self.sprite_parede, position)
                 elif self.board[i][j] == BlockStatus.DESTRUCTIBLE_WALL:
@@ -158,9 +163,10 @@ class Stage:
         for i in self.power_ups:
             i.draw(screen)
 
-        self.update()
+        self.update(lucky_block_position)
 
-    def update(self):
+    def update(self, lucky_block_position = (0, 0)):
+
         self.frames += 1
         if self.frames >= 6:
             self.frames = 0
@@ -171,12 +177,16 @@ class Stage:
                         index = self.bloco_explodindo_index.index(self.board[i][j])
                         if index == len(self.bloco_explodindo_index) - 1:
                             if random.randint(0, 1) == 1:
-                                self.board[i][j] = BlockStatus.POWER_UP
-                                power_up = PowerUp(i, j)
-                                self.board[i][j] += power_up.num
-                                self.power_ups.append(power_up)
-                            else:
-                                self.board[i][j] = BlockStatus.CLEAR
+                                if (i, j) != lucky_block_position and random.randint(0, 1) == 1:
+                                    self.board[i][j] = BlockStatus.POWER_UP
+                                    power_up = PowerUp(i, j)
+                                    self.board[i][j] += power_up.num
+                                    self.power_ups.append(power_up)
+                                else:
+                                    if lucky_block_position == (i, j):
+                                        self.board[i][j] = BlockStatus.CHAVE
+                                    else:
+                                        self.board[i][j] = BlockStatus.CLEAR
                         else:
                             self.board[i][j] = self.bloco_explodindo_index[index + 1]
 

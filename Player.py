@@ -67,8 +67,11 @@ class Player:
     def check_collision(next_position, board, direction):
         matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], direction)
         return (board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR or
-                BlockStatus.POWER_UP <= board[int(matrix_pos[0])][int(matrix_pos[1])] <= BlockStatus.POWER_UP + 9)
-
+                BlockStatus.POWER_UP <= board[int(matrix_pos[0])][int(matrix_pos[1])] <= BlockStatus.POWER_UP + 9 or
+                board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CHAVE or
+                board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.PORTAL_ABERTO or
+                board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.PORTAL_FECHADO
+                )
     def move_left(self, frames, board, check_caveira=True):
 
         if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
@@ -251,8 +254,15 @@ class Player:
                     self.active_bombs -= 1
 
             matrix_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+            if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.CHAVE:
+                for i in range(len(board)):
+                    for j in range(len(board[i])):
+                        if board[i][j] == BlockStatus.PORTAL_FECHADO:
+                            board[i][j] = BlockStatus.PORTAL_ABERTO
+                            board[matrix_pos[0]][matrix_pos[1]] = BlockStatus.CLEAR
+                            break
 
-            if 5 <= board[matrix_pos[0]][matrix_pos[1]] <= 14:
+            elif 5 <= board[matrix_pos[0]][matrix_pos[1]] <= 14:
                 for power in Stage.stage.power_ups:
                     if power.position == matrix_pos:
                         self.power_ups.append(power)
@@ -260,13 +270,15 @@ class Player:
                         Stage.stage.power_ups.remove(power)
                         board[matrix_pos[0]][matrix_pos[1]] = BlockStatus.CLEAR
                         break
-
+            elif board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.PORTAL_ABERTO:
+                return True
             if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.FIRE and not self.is_invincible:
                  self.is_morrendo = True
                  self.is_invincible = True
 
         if self.isAlive:
             self.draw(screen, frames)
+        return False
 
     def draw(self, screen, frames):
         if self.is_invincible and frames % 15 > 7:

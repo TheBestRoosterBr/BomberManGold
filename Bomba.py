@@ -83,7 +83,7 @@ class Bomba:
                 for bomba in Stage.stage.bombas:
                     if bomba.position == (position, self.position[1]):
                         bomba.bomb_types[bomba.current_type]['enable'](bomba)
-            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL or next_block == BlockStatus.LUCKY_BLOCK:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 if self.current_type != 'espinho':
                     break
@@ -115,7 +115,7 @@ class Bomba:
                 for bomba in Stage.stage.bombas:
                     if bomba.position == (position, self.position[1]):
                         bomba.bomb_types[bomba.current_type]['enable'](bomba)
-            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL or next_block == BlockStatus.LUCKY_BLOCK:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 if self.current_type != 'espinho':
                     break
@@ -155,7 +155,7 @@ class Bomba:
                         break
                 if self.current_type != 'espinho':
                     break
-            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL or next_block == BlockStatus.LUCKY_BLOCK:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 if self.current_type != 'espinho':
                     break
@@ -181,7 +181,7 @@ class Bomba:
                 for bomba in Stage.stage.bombas:
                     if bomba.position == (self.position[0], position):
                         bomba.bomb_types[bomba.current_type]['enable'](bomba)
-            elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
+            elif next_block == BlockStatus.DESTRUCTIBLE_WALL or next_block == BlockStatus.LUCKY_BLOCK:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 if self.current_type != 'espinho':
                     break

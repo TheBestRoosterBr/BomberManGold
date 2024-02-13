@@ -19,6 +19,7 @@ class Level:
 class Level1World1(Level):
     def __init__(self):
         super().__init__(1)
+        self.lucky_block_position = (13, 16)
 
     def alter_stage(self):
         Stage.stage.sprite_parede = pygame.transform.scale(pygame.image.load("Assets/marioBlock.png"),
@@ -28,7 +29,7 @@ class Level1World1(Level):
 
         Stage.stage.board = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 17, 1],
+            [1, 0, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 17, 1],
             [1, 0, 2, 0, 2, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
             [1, 2, 1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 1],
             [1, 0, 2, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2, 1, 2, 1],
@@ -44,6 +45,7 @@ class Level1World1(Level):
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
 
+        Stage.stage.board[self.lucky_block_position[0]][self.lucky_block_position[1]] = BlockStatus.LUCKY_BLOCK
         koopa1 = Koopa(1, 16)
         koopa2 = Koopa(3, 13)
         bill_spawner1 = BillSpawner(1, 7, True)
@@ -60,7 +62,13 @@ class Level1World1(Level):
     def run(self, screen):
         self.alter_stage()
         game = Game(screen, enemies=self.enemies)
-        game.run()
+        self.game_result = game.run(self.lucky_block_position)
+        resultado = TelaResultado(screen)
+        if not self.game_result:
+            resultado.screen_derrota()
+        elif self.game_result == 0:
+            resultado.screen_vitoria()
+            exit(1)
 
 
 class Level2World1(Level):
@@ -99,6 +107,7 @@ class Level2World1(Level):
 
     def run(self, screen):
         self.alter_stage()
+        #Olhe como ta a do level 1 pra deixar parecido
         game = Game(screen, enemies=self.enemies)
         self.game_result = game.run()
         resultado = TelaResultado(screen)

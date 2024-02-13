@@ -21,7 +21,7 @@ class Game:
         self.enemies = enemies
         self.game_result = 0 # 0 for win, 1 to lose, 2 for draw
 
-    def update(self):
+    def update(self, lucky_block_position=(0, 0)):
         #Simplesmente um if que n serve pra nada. TODO: um timer pra não ficar rápido
         self.frames += 1
 
@@ -58,21 +58,26 @@ class Game:
             self.is_running = False
             self.game_result = 1
             return
-        self.draw()
+        return self.draw(lucky_block_position)
 
-    def draw(self):
+    def draw(self, lucky_block_position=(0, 0)):
         self.screen.fill((0, 0, 0))
-        self.stage.draw(self.screen)
-        self.player.update(self.screen, self.frames)
+        self.stage.draw(self.screen, lucky_block_position)
+        result = self.player.update(self.screen, self.frames)
         pos = self.player.position
         for i in range(len(self.enemies)):
             self.enemies[i].update(self.screen, Stage.screen_pos_to_matrix(pos[0], pos[1]))
         pygame.display.update()
         self.clock.tick(self.config.game_fps)
+        return result
 
-    def run(self):
+    def run(self, lucky_block_position=(0, 0)):
         while self.is_running:
-            self.update()
-        return self.game_result
+            self.game_result = self.update(lucky_block_position)
+            if self.game_result:
+                return True
+            if not self.player.isAlive:
+                return False
+        return False
 
 

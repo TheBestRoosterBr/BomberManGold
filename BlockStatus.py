@@ -10,7 +10,7 @@ class BlockStatus(IntEnum):
     DESTROY_BLOCK = 0b1000000
     DESTROY_POWER_UP = 0b10000001000000
     POWER_UP = 5 #Valores entre 5 e 14 são os power UPS
-    LUCKY_BLOCK = 0b1111111
+    LUCKY_BLOCK = 15
     CHAVE = 16
     PORTAL_FECHADO = 17
     PORTAL_ABERTO = 18
