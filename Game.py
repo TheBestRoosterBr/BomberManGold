@@ -14,7 +14,7 @@ class Game:
         self.config = Configuration.Configuration.get_config()
         self.screen = screen
         self.stage = Stage.stage
-        self.player = Player()
+        self.player = Player(1, 1)
         self.is_running = True
         self.frames = 0
         self.clock = pygame.time.Clock()
@@ -58,7 +58,7 @@ class Game:
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.stage.draw(self.screen)
-        self.player.update(self.screen)
+        self.player.update(self.screen, self.frames)
         pos = self.player.position
         for i in range(len(self.enemies)):
             self.enemies[i].update(self.screen, Stage.screen_pos_to_matrix(pos[0], pos[1]))
