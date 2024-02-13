@@ -19,6 +19,7 @@ class Game:
         self.frames = 0
         self.clock = pygame.time.Clock()
         self.enemies = enemies
+        self.game_result = 0 # 0 for win, 1 to lose, 2 for draw
 
     def update(self):
         #Simplesmente um if que n serve pra nada. TODO: um timer pra não ficar rápido
@@ -53,6 +54,10 @@ class Game:
             else:
                 self.player.stop()
 
+        if not self.player.isAlive:
+            self.is_running = False
+            self.game_result = 1
+            return
         self.draw()
 
     def draw(self):
@@ -68,5 +73,6 @@ class Game:
     def run(self):
         while self.is_running:
             self.update()
+        return self.game_result
 
 

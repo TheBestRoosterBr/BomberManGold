@@ -9,7 +9,7 @@ class World1:
         self.levels = []
         level1 = Level.Level1World1()
         self.levels.append(level1)
-        self.total_levels = 4
+        self.total_levels = 5
         self.sprite = pygame.image.load('Assets/World1Map.png')
         size = Configuration.get_config().map_size
         self.sprite = pygame.transform.scale(self.sprite, size)
@@ -29,7 +29,7 @@ class World1:
     def level_to_position(self):
         if self.selected_level == 0:
             self.foto_position[0] = 84 + self.offset_x
-            self.foto_position[1] = 28 + self.offset_y
+            self.foto_position[1] = 148 + self.offset_y
         if self.selected_level == 1:
             self.foto_position[0] = 212 + self.offset_x
             self.foto_position[1] = 20 + self.offset_y
