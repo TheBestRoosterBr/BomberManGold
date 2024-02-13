@@ -89,6 +89,7 @@ class Stage:
             0b1111100,
             0b1111110,
         ]
+        self.bombas = []
         self.frames = 0
         self.power_ups = []
 
@@ -103,7 +104,7 @@ class Stage:
                     screen.blit(self.sprite_parede, position)
                 elif self.board[i][j] == BlockStatus.DESTRUCTIBLE_WALL:
                     screen.blit(self.sprite_parede_destrutiva, position)
-                elif self.board[i][j] & 0b1000000 == 0b1000000:
+                elif self.board[i][j] & 0b10000001000000 == 0b1000000:
                     index = self.bloco_explodindo_index.index(self.board[i][j])
                     frame = self.bloco_explodindo.subsurface(index * 16, 0, 16, 16)
                     frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
@@ -122,15 +123,20 @@ class Stage:
 
             for i in range(len(self.board)):
                 for j in range(len(self.board[i])):
-                    if self.board[i][j] & 0b1000000 == 0b1000000:
+                    if self.board[i][j] & 0b10000001000000 == 0b1000000:
                         index = self.bloco_explodindo_index.index(self.board[i][j])
                         if index == len(self.bloco_explodindo_index) - 1:
-                            self.board[i][j] = BlockStatus.POWER_UP
-                            power_up = PowerUp(i, j)
-                            self.board[i][j] += power_up.num
-                            self.power_ups.append(power_up)
+                            if random.randint(0, 1) == 1:
+                                self.board[i][j] = BlockStatus.POWER_UP
+                                power_up = PowerUp(i, j)
+                                self.board[i][j] += power_up.num
+                                self.power_ups.append(power_up)
+                            else:
+                                self.board[i][j] = BlockStatus.CLEAR
                         else:
                             self.board[i][j] = self.bloco_explodindo_index[index + 1]
+                    elif self.board[i][j] & 0b10000001000000 == 0b10000001000000:
+                        pass
 
 
 stage = Stage()

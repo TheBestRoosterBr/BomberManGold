@@ -11,7 +11,8 @@ class Game:
         self.config = Configuration.Configuration.get_config()
         self.screen = screen
         self.stage = Stage.stage
-        self.player = Player()
+        self.player = Player(1, 1)
+        self.player2 = Player(13, 17)
         self.is_running = True
         self.frames = 0
         self.clock = pygame.time.Clock()
@@ -24,11 +25,18 @@ class Game:
             if event.type == pygame.QUIT:
                 self.is_running = False
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_j:
-                    self.player.put_bomb()
+            if not self.player.is_morrendo or self.player.is_invincible:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_j:
+                        self.player.put_bomb()
+                    elif event.key == pygame.K_k:
+                        if self.player.bomb_type == 'relogio':
+                            for i in self.player.bombs:
+                                if i.current_type == 'relogio':
+                                    i.bomb_types['relogio']['enable'](i)
+                                    break
 
-        if not self.player.is_morrendo:
+        if not self.player.is_morrendo or self.player.is_invincible:
             keys = pygame.key.get_pressed()
 
             if keys[pygame.K_a]:
@@ -47,7 +55,8 @@ class Game:
     def draw(self):
         self.screen.fill((0, 0, 0))
         self.stage.draw(self.screen)
-        self.player.update(self.screen)
+        self.player.update(self.screen, self.frames)
+        self.player2.update(self.screen, self.frames)
         pygame.display.update()
         self.clock.tick(self.config.game_fps)
 
