@@ -90,8 +90,9 @@ class Bomba:
             elif 5 <= next_block <= 14:
                 for power_up in Stage.stage.power_ups:
                     if power_up.position == (position, self.position[1]):
-                        Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
-
+                        Stage.stage.board[power_up.position[0]][power_up.position[1]] = BlockStatus.DESTROY_POWER_UP
+                        Stage.stage.power_ups.remove(power_up)
+                        break
                 if self.current_type != 'espinho':
                     break
             elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
@@ -118,6 +119,14 @@ class Bomba:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 if self.current_type != 'espinho':
                     break
+            elif 5 <= next_block <= 14:
+                for power_up in Stage.stage.power_ups:
+                    if power_up.position == (position, self.position[1]):
+                        Stage.stage.board[power_up.position[0]][power_up.position[1]] = BlockStatus.DESTROY_POWER_UP
+                        Stage.stage.power_ups.remove(power_up)
+                        break
+                if self.current_type != 'espinho':
+                    break
             elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.FIRE
                 index = 2 if i == power - 1 else 1
@@ -138,6 +147,14 @@ class Bomba:
                 for bomba in Stage.stage.bombas:
                     if bomba.position == (self.position[0], position):
                         bomba.bomb_types[bomba.current_type]['enable'](bomba)
+            elif 5 <= next_block <= 14:
+                for power_up in Stage.stage.power_ups:
+                    if power_up.position == (self.position[0], position):
+                        Stage.stage.board[power_up.position[0]][power_up.position[1]] = BlockStatus.DESTROY_POWER_UP
+                        Stage.stage.power_ups.remove(power_up)
+                        break
+                if self.current_type != 'espinho':
+                    break
             elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 if self.current_type != 'espinho':
@@ -174,6 +191,8 @@ class Bomba:
                         Stage.stage.board[power_up.position[0]][power_up.position[1]] = BlockStatus.DESTROY_POWER_UP
                         Stage.stage.power_ups.remove(power_up)
                         break
+                if self.current_type != 'espinho':
+                    break
 
             elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.FIRE

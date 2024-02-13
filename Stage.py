@@ -88,6 +88,7 @@ def matrix_to_screen_pos(i, j):
 
 class Stage:
     def __init__(self):
+
         self.config = Configuration.get_config()
         self.board = create_board()
         self.sprite_parede = pygame.transform.scale(pygame.image.load("Assets/parede.png"), self.config.cell_size)
@@ -101,6 +102,16 @@ class Stage:
             0b1111100,
             0b1111110,
         ]
+        self.power_up_sprite = pygame.image.load("Assets/powerUpQueimando.png")
+        self.power_up_explodindo_index = [
+            0b10000001000000,
+            0b11000001000000,
+            0b11100001000000,
+            0b11110001000000,
+            0b11111001000000,
+            0b11111101000000,
+        ]
+
         self.bombas = []
         self.frames = 0
         self.power_ups = []
@@ -119,6 +130,12 @@ class Stage:
                 elif self.board[i][j] & 0b10000001000000 == 0b1000000:
                     index = self.bloco_explodindo_index.index(self.board[i][j])
                     frame = self.bloco_explodindo.subsurface(index * 16, 0, 16, 16)
+                    frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
+                    pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
+                    screen.blit(frame, matrix_to_screen_pos(i, j))
+                elif self.board[i][j] & 0b10000001000000 == 0b10000001000000:
+                    index = self.power_up_explodindo_index.index(self.board[i][j])
+                    frame = self.power_up_sprite.subsurface(index * 16, 0, 16, 16)
                     frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
                     pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
                     screen.blit(frame, matrix_to_screen_pos(i, j))
@@ -147,8 +164,13 @@ class Stage:
                                 self.board[i][j] = BlockStatus.CLEAR
                         else:
                             self.board[i][j] = self.bloco_explodindo_index[index + 1]
+
                     elif self.board[i][j] & 0b10000001000000 == 0b10000001000000:
-                        pass
+                        index = self.power_up_explodindo_index.index(self.board[i][j])
+                        if index == len(self.power_up_explodindo_index) - 1:
+                            self.board[i][j] = BlockStatus.CLEAR
+                        else:
+                            self.board[i][j] = self.power_up_explodindo_index[index + 1]
 
 
 stage = Stage()
