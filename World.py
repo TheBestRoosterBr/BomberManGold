@@ -22,24 +22,26 @@ class World1:
         self.frames = 0
         self.transition_frames_counter = 0
         self.screen = screen
+        self.offset_x = Configuration.get_config().screen_width/ 2 - self.sprite.get_width() / 2
+        self.offset_y = Configuration.get_config().screen_height/ 2 - self.sprite.get_height() / 2
         self.is_running = True
 
     def level_to_position(self):
         if self.selected_level == 0:
-            self.foto_position[0] = 84
-            self.foto_position[1] = 28
+            self.foto_position[0] = 84 + self.offset_x
+            self.foto_position[1] = 28 + self.offset_y
         if self.selected_level == 1:
-            self.foto_position[0] = 212
-            self.foto_position[1] = 20
+            self.foto_position[0] = 212 + self.offset_x
+            self.foto_position[1] = 20 + self.offset_y
         if self.selected_level == 2:
-            self.foto_position[0] = 468
-            self.foto_position[1] = 20
+            self.foto_position[0] = 468 + self.offset_x
+            self.foto_position[1] = 20 + self.offset_y
         if self.selected_level == 3:
-            self.foto_position[0] = 468
-            self.foto_position[1] = 276
+            self.foto_position[0] = 468 + self.offset_x
+            self.foto_position[1] = 276 + self.offset_y
         if self.selected_level == 4:
-            self.foto_position[0] = 700
-            self.foto_position[1] = 400
+            self.foto_position[0] = 700 + self.offset_x
+            self.foto_position[1] = 400 + self.offset_y
 
         if self.is_in_transition:
             if self.transition_frames_counter > Configuration.get_config().game_fps * 3:
@@ -71,7 +73,8 @@ class World1:
         self.draw()
 
     def draw(self):
-        self.screen.blit(self.sprite, (Configuration.get_config(), 0))
+
+        self.screen.blit(self.sprite, (self.offset_x, self.offset_y))
         self.screen.blit(self.foto, self.foto_position)
         pygame.display.update()
 
