@@ -3,6 +3,7 @@ import Stage
 from BlockStatus import BlockStatus
 from Configuration import Configuration
 
+
 class Bomba:
     def __init__(self, bomb_power, x, y):
         self.power = bomb_power
@@ -17,6 +18,7 @@ class Bomba:
         self.frame_size = 16
         self.frame_index = 0
         self.is_exploded = False
+        Stage.stage.board[x][y] = BlockStatus.BOMBA
 
     def update(self, screen):
         self.frames += 1
@@ -40,6 +42,7 @@ class Bomba:
                                                          self.frame_size, self.frame_size))
         actual_frame = pygame.transform.scale(actual_frame, Configuration.get_config().cell_size)
         screen.blit(actual_frame, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+        Stage.stage.board[self.position[0]][self.position[1]] = BlockStatus.FIRE
         # Up
         for i in range(1, self.power):
             position = self.position[0] - i
@@ -51,6 +54,7 @@ class Bomba:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 break
             elif next_block == BlockStatus.CLEAR:
+                Stage.stage.board[position][self.position[1]] = BlockStatus.FIRE
                 index = 2 if i == self.power - 1 else 1
                 spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
                                                         self.frame_size, self.frame_size))
@@ -69,7 +73,7 @@ class Bomba:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 break
             elif next_block == BlockStatus.CLEAR:
-
+                Stage.stage.board[position][self.position[1]] = BlockStatus.FIRE
                 index = 2 if i == self.power - 1 else 1
                 spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
                                                         self.frame_size, self.frame_size))
@@ -88,6 +92,7 @@ class Bomba:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 break
             elif next_block == BlockStatus.CLEAR:
+                Stage.stage.board[self.position[0]][position] = BlockStatus.FIRE
                 position = self.position[1] - i
                 index = 2 if i == self.power - 1 else 1
                 spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
@@ -108,6 +113,7 @@ class Bomba:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 break
             elif next_block == BlockStatus.CLEAR:
+                Stage.stage.board[self.position[0]][position] = BlockStatus.FIRE
                 position = self.position[1] + i
                 index = 2 if i == self.power - 1 else 1
                 spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,

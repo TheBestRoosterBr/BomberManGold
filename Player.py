@@ -24,6 +24,13 @@ class Player:
         self.bomb_power = 5
         self.bombs = []
 
+        self.is_morrendo = False
+        self.frames_morrendo = 0
+        self.morrendo_index = 0
+        self.total_morrendo = 6
+        self.morrendo_sprite = pygame.image.load('Assets/morrendo.png')
+
+
     @staticmethod
     def check_collision(next_position, board, direction):
         matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], direction)
@@ -84,14 +91,54 @@ class Player:
 
     def update(self, screen):
         # Create a copy of the list to iterate over
-        bombs_copy = self.bombs[:]
 
-        for bomb in bombs_copy:
-            bomb.update(screen)
-            if bomb.is_exploded:
-                # Remove the bomb from the original list
-                self.bombs.remove(bomb)
-                self.active_bombs -= 1
+        if self.is_morrendo:
+
+            pass
+        else:
+            bombs_copy = self.bombs[:]
+            board = Stage.stage.board
+
+            for bomb in bombs_copy:
+                bomb.update(screen)
+                if bomb.is_exploded:
+                    # Remove the bomb from the original list
+
+                    bomb_i = bomb.position[0]
+                    bomb_j = bomb.position[1]
+                    board[bomb_i][bomb_j] = BlockStatus.CLEAR
+                    for i in range(1, bomb.power):
+                        if board[bomb_i + i][bomb_j] == BlockStatus.FIRE:
+                            board[bomb_i + i][bomb_j] = BlockStatus.CLEAR
+                        else:
+                            break
+
+                    for i in range(1, bomb.power):
+                        if board[bomb_i - i][bomb_j] == BlockStatus.FIRE:
+                            board[bomb_i - i][bomb_j] = BlockStatus.CLEAR
+                        else:
+                            break
+
+                    for i in range(1, bomb.power):
+                        if board[bomb_i][bomb_j + i] == BlockStatus.FIRE:
+                            board[bomb_i][bomb_j + i] = BlockStatus.CLEAR
+                        else:
+                            break
+
+                    for i in range(1, bomb.power):
+                        if board[bomb_i][bomb_j - i] == BlockStatus.FIRE:
+                            board[bomb_i][bomb_j - i] = BlockStatus.CLEAR
+                        else:
+                            break
+
+
+                    self.bombs.remove(bomb)
+                    self.active_bombs -= 1
+
+            matrix_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+            if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.FIRE:
+                self.is_morrendo = True
+
 
         self.draw(screen)
 
