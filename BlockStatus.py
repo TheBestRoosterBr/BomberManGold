@@ -8,4 +8,5 @@ class BlockStatus(IntEnum):
     FIRE = 3
     BOMBA = 4
     DESTROY_BLOCK = 0b1000000
+    POWER_UP = 0b100
 
