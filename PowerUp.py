@@ -23,7 +23,7 @@ class PowerUp:
         self.num = self.generate_random_powerup()
         sprite = pygame.image.load('Assets/powerups.png')
         size = 16
-        sprite.subsurface(size * self.num, 0, size, size)
+        sprite = sprite.subsurface(size * self.num, 0, size, size)
         self.sprite = pygame.transform.scale(sprite, Configuration.get_config().cell_size)
         self.border_sprite = pygame.image.load('Assets/borders_power_up.png')
         self.frames = 0
@@ -41,11 +41,13 @@ class PowerUp:
     def draw(self, screen):
         self.frames += 1
         pos = Stage.matrix_to_screen_pos(self.position[0], self.position[1])
-        screen.blit(self.sprite, pos[0], pos[1])
+        screen.blit(self.sprite, (pos[0], pos[1]))
+
         index = self.frames % 5
         size = 16
         spr_bord = self.border_sprite.subsurface(index * size, 0, size, size)
-        screen.blit(spr_bord, pos[0], pos[1])
+        spr_bord = pygame.transform.scale(spr_bord, Configuration.get_config().cell_size)
+        screen.blit(spr_bord, (pos[0], pos[1]))
 
     def get_power_up(self, player):
         if self.num == PowerUpEnum.Foguinho:

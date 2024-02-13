@@ -1,4 +1,6 @@
 import pygame
+
+import PowerUp
 import Stage
 from Bomba import Bomba
 from BlockStatus import BlockStatus
@@ -35,7 +37,8 @@ class Player:
     @staticmethod
     def check_collision(next_position, board, direction):
         matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], direction)
-        return board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR
+        return (board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR or
+                BlockStatus.POWER_UP <= board[int(matrix_pos[0])][int(matrix_pos[1])] <= BlockStatus.POWER_UP + 9)
 
     def move_left(self, frames, board):
         if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0)):
@@ -153,8 +156,22 @@ class Player:
                     self.active_bombs -= 1
 
             matrix_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+
+            if 5 <= board[matrix_pos[0]][matrix_pos[1]] <= 14:
+                for power in Stage.stage.power_ups:
+                    if power.position == matrix_pos:
+                        self.power_ups.append(power)
+                        power.get_power_up(self)
+                        Stage.stage.power_ups.remove(power)
+                        board[matrix_pos[0]][matrix_pos[1]] = BlockStatus.CLEAR
+                        break
+
+
+
             if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.FIRE:
                 self.is_morrendo = True
+
+
         if self.isAlive:
             self.draw(screen)
 

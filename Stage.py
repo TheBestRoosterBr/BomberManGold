@@ -3,6 +3,7 @@ import random
 import pygame
 from Configuration import Configuration
 from BlockStatus import BlockStatus
+from PowerUp import PowerUp
 
 
 def create_board():
@@ -89,6 +90,7 @@ class Stage:
             0b1111110,
         ]
         self.frames = 0
+        self.power_ups = []
 
     def draw(self, screen):
 
@@ -108,6 +110,9 @@ class Stage:
                     pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
                     screen.blit(frame, matrix_to_screen_pos(i, j))
 
+        for i in self.power_ups:
+            i.draw(screen)
+
         self.update()
 
     def update(self):
@@ -120,7 +125,10 @@ class Stage:
                     if self.board[i][j] & 0b1000000 == 0b1000000:
                         index = self.bloco_explodindo_index.index(self.board[i][j])
                         if index == len(self.bloco_explodindo_index) - 1:
-                            self.board[i][j] = 0
+                            self.board[i][j] = BlockStatus.POWER_UP
+                            power_up = PowerUp(i, j)
+                            self.board[i][j] += power_up.num
+                            self.power_ups.append(power_up)
                         else:
                             self.board[i][j] = self.bloco_explodindo_index[index + 1]
 
