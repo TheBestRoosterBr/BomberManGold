@@ -19,8 +19,6 @@ class Game:
     def update(self):
         #Simplesmente um if que n serve pra nada. TODO: um timer pra não ficar rápido
         self.frames += 1
-        if self.frames <= 6000000:
-            self.frames = 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -30,17 +28,19 @@ class Game:
                 if event.key == pygame.K_j:
                     self.player.put_bomb()
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
-            self.player.move_left(self.frames,self.stage.board)
-        elif keys[pygame.K_d]:
-            self.player.move_right(self.frames, self.stage.board)
-        elif keys[pygame.K_s]:
-            self.player.move_down(self.frames, self.stage.board)
-        elif keys[pygame.K_w]:
-            self.player.move_up(self.frames, self.stage.board)
-        else:
-            self.player.stop()
+        if not self.player.is_morrendo:
+            keys = pygame.key.get_pressed()
+
+            if keys[pygame.K_a]:
+                self.player.move_left(self.frames,self.stage.board)
+            elif keys[pygame.K_d]:
+                self.player.move_right(self.frames, self.stage.board)
+            elif keys[pygame.K_s]:
+                self.player.move_down(self.frames, self.stage.board)
+            elif keys[pygame.K_w]:
+                self.player.move_up(self.frames, self.stage.board)
+            else:
+                self.player.stop()
 
         self.draw()
 

@@ -97,7 +97,7 @@ class Stage:
         for i in range(len(self.board)):
             for j in range(len(self.board[i])):
                 position = (self.config.cell_size[1] * j + self.config.offset_x, self.config.cell_size[0] * i + self.config.offset_y)
-                if self.board[i][j] == BlockStatus.CLEAR:
+                if self.board[i][j] == BlockStatus.CLEAR or self.board[i][j] == BlockStatus.BOMBA or self.board[i][j] == BlockStatus.FIRE:
                     pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
                 elif self.board[i][j] == BlockStatus.WALL:
                     screen.blit(self.sprite_parede, position)
@@ -109,6 +109,7 @@ class Stage:
                     frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
                     pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
                     screen.blit(frame, matrix_to_screen_pos(i, j))
+
         self.update()
 
     def update(self):

@@ -53,7 +53,7 @@ class Bomba:
             elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 break
-            elif next_block == BlockStatus.CLEAR:
+            elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.FIRE
                 index = 2 if i == self.power - 1 else 1
                 spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
@@ -72,7 +72,7 @@ class Bomba:
             elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.DESTROY_BLOCK
                 break
-            elif next_block == BlockStatus.CLEAR:
+            elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
                 Stage.stage.board[position][self.position[1]] = BlockStatus.FIRE
                 index = 2 if i == self.power - 1 else 1
                 spr = self.explosion_sprite.subsurface((index * self.frame_size, self.explosion_index[1] * self.frame_size,
@@ -91,7 +91,7 @@ class Bomba:
             elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 break
-            elif next_block == BlockStatus.CLEAR:
+            elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.FIRE
                 position = self.position[1] - i
                 index = 2 if i == self.power - 1 else 1
@@ -112,7 +112,7 @@ class Bomba:
             elif next_block == BlockStatus.DESTRUCTIBLE_WALL:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
                 break
-            elif next_block == BlockStatus.CLEAR:
+            elif next_block == BlockStatus.CLEAR or next_block == BlockStatus.FIRE:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.FIRE
                 position = self.position[1] + i
                 index = 2 if i == self.power - 1 else 1
