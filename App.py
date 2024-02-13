@@ -13,5 +13,5 @@ class App:
 
     def run(self):
         menu = MenuInicial(self.screen)
-        #menu.main_loop()
+        menu.main_loop()
         self.game.run()
