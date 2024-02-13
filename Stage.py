@@ -170,8 +170,6 @@ class Stage:
                     if self.board[i][j] & 0b10000001000000 == 0b1000000:
                         index = self.bloco_explodindo_index.index(self.board[i][j])
                         if index == len(self.bloco_explodindo_index) - 1:
-                            if self.board[i][j] == BlockStatus.LUCKY_BLOCK:
-                                self.board[i][j] = BlockStatus.CHAVE
                             if random.randint(0, 1) == 1:
                                 self.board[i][j] = BlockStatus.POWER_UP
                                 power_up = PowerUp(i, j)

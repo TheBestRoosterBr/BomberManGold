@@ -38,7 +38,7 @@ class Level1World1(Level):
             [1, 0, 1, 2, 1, 1, 2, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
             [1, 0, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1],
-            [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, BlockStatus.LUCKY_BLOCK, 2, 0, 0, 1],
+            [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 1],
             [1, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1],
             [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
@@ -46,8 +46,16 @@ class Level1World1(Level):
 
         koopa1 = Koopa(1, 16)
         koopa2 = Koopa(3, 13)
+        bill_spawner1 = BillSpawner(1, 7, True)
+        bill_spawner2 = BillSpawner(1, 12, True)
+        bill_spawner3 = BillSpawner(17, 12)
+        bill_spawner4 = BillSpawner(17, 12)
         self.enemies.append(koopa1)
         self.enemies.append(koopa2)
+        self.enemies.append(bill_spawner1)
+        self.enemies.append(bill_spawner2)
+        self.enemies.append(bill_spawner3)
+        self.enemies.append(bill_spawner4)
 
     def run(self, screen):
         self.alter_stage()
