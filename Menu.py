@@ -87,6 +87,7 @@ class TelaResultado:
                             elif i == 1:
                                 # Lógica para "Próximo Nível"
                                 pass
+            pygame.display.update()
 
     def screen_derrota(self):
         option = 0
@@ -106,7 +107,7 @@ class TelaResultado:
                             elif i == 1:
                                 # Lógica para "Jogar Novamente"
                                 pass
-
+            pygame.display.update()
 
 
 class MenuInicial:
@@ -225,7 +226,7 @@ class MenuInicial:
 
         if option == 0:
             resultado = TelaResultado(self.screen)
-            resultado.screen_derrota()
+            resultado.screen_vitoria()
         elif option == 1:
             resultado = TelaResultado(self.screen)
             resultado.screen_derrota()
