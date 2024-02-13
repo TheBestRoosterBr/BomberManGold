@@ -6,6 +6,25 @@ from BlockStatus import BlockStatus
 from PowerUp import PowerUp
 
 
+def create_clear_board():
+    ROW = 19
+    COL = 15
+    # Create an empty board filled with clear blocks
+    board = [[0 for _ in range(COL)] for _ in range(ROW)]
+    return board
+
+
+def preencher_board(board):
+    for i in range(len(board[0])):
+        for j in range(len(board)):
+            if board[j][i] == BlockStatus.CLEAR:
+                if random.randint(1, 20) < 19:
+                    board[j][i] = BlockStatus.DESTRUCTIBLE_WALL
+            elif board[j][i] == 3:
+                board[j][i] = BlockStatus.CLEAR
+    return board
+
+
 def create_board():
     board = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -25,14 +44,7 @@ def create_board():
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ]
 
-    for i in range(len(board[0])):
-        for j in range(len(board)):
-            if board[j][i] == BlockStatus.CLEAR:
-                if random.randint(1, 20) < 19:
-                    board[j][i] = BlockStatus.DESTRUCTIBLE_WALL
-            elif board[j][i] == 3:
-                board[j][i] = BlockStatus.CLEAR
-    return board
+    return preencher_board(board)
 
 
 def screen_pos_to_matrix(screen_x, screen_y):

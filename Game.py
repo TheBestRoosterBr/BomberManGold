@@ -2,12 +2,15 @@ import pygame.display
 
 import Configuration
 import Stage
+from Enemy import Koopa
 from Player import Player
 import Stage
 
 
 class Game:
-    def __init__(self, screen):
+    def __init__(self, screen, enemies=None):
+        if enemies is None:
+            enemies = []
         self.config = Configuration.Configuration.get_config()
         self.screen = screen
         self.stage = Stage.stage
@@ -15,6 +18,7 @@ class Game:
         self.is_running = True
         self.frames = 0
         self.clock = pygame.time.Clock()
+        self.enemies = enemies
 
     def update(self):
         #Simplesmente um if que n serve pra nada. TODO: um timer pra não ficar rápido
@@ -48,6 +52,9 @@ class Game:
         self.screen.fill((0, 0, 0))
         self.stage.draw(self.screen)
         self.player.update(self.screen)
+        pos = self.player.position
+        for i in range(len(self.enemies)):
+            self.enemies[i].update(self.screen, Stage.screen_pos_to_matrix(pos[0], pos[1]))
         pygame.display.update()
         self.clock.tick(self.config.game_fps)
 

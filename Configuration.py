@@ -14,6 +14,8 @@ class Configuration:
         self.game_fps = 60
         self.cell_size = (16 * 3, 48)
         self.board_size = (19, 15)
-
         self.offset_x = (self.screen_width - self.cell_size[0] * self.board_size[0]) / 2
         self.offset_y = (self.screen_height - self.cell_size[1] * self.board_size[1]) / 2
+        self.actual_world = 0
+        self.level = 0
+        self.map_size = (936, 648)

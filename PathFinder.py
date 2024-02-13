@@ -90,7 +90,7 @@ def a_star_search(grid, src, dest):
         closed_list[i][j] = True
 
         # For each direction, check the successors
-        directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1)]
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
         for dir in directions:
             new_i = i + dir[0]
             new_j = j + dir[1]

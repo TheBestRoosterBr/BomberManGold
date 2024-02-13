@@ -27,13 +27,16 @@ class Koopa(Enemy):
         self.position = [x, y]
 
     def update(self, screen, player_board_position):
+        # todo: deixar essa animacao lisa @Mota
         self.frames += 1
-        if self.frames % 10 == 0 or self.frames % 5 == 0:
+        if self.frames % 100 == 0:
             self.index = self.frames % 2
-        self.position = PathFinder.path_finder(player_board_position, self.position)
+            pos = PathFinder.path_finder(player_board_position, self.position)
+            self.position[0] += pos[0]
+            self.position[1] += pos[1]
         self.draw(screen)
 
     def draw(self, screen):
         spr = self.sprite.subsurface(self.index * 16, 0, 16, 27)
         spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
-        screen.blit(spr, self.position)
+        screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
