@@ -58,3 +58,17 @@ class PowerUp:
             player.max_bombs += 1
         elif self.num == PowerUpEnum.Patins:
             player.speed += 1
+        elif self.num == PowerUpEnum.BombaEspinho:
+            player.bomb_type = 'espinho'
+        elif self.num == PowerUpEnum.BombaP:
+            player.bomb_type = 'bombaP'
+        elif self.num == PowerUpEnum.BombaRelogio:
+            player.bomb_type = 'relogio'
+        elif self.num == PowerUpEnum.Vida:
+            player.vidas += 1
+        elif self.num == PowerUpEnum.Colete:
+            player.pegar_colete()
+        elif self.num == PowerUpEnum.Caveira:
+            pass
+
+

@@ -8,11 +8,11 @@ from Configuration import Configuration
 
 
 class Player:
-    def __init__(self):
+    def __init__(self, x, y):
         self.score = 0
         self.lives = 1
         self.Name = "BomberManFodase"
-        pos = Stage.matrix_to_screen_pos(1, 1)
+        pos = Stage.matrix_to_screen_pos(x, y)
         self.position = [pos[0], pos[1]]
         self.power_ups = []
         self.sprite = pygame.image.load('Assets/player.png')
@@ -21,18 +21,23 @@ class Player:
         self.frame_index = [0, 0]
         self.last_state = 0  # 0 for left, 1 for right, 2 for up, and 3 for down
         self.speed = 2
-        self.max_bombs = 1
+        self.max_bombs = 5
         self.active_bombs = 0
         self.bomb_power = 5
+        self.bomb_type = 'relogio'
         self.bombs = []
         self.isAlive = True
-
+        self.vidas = 0
         self.is_morrendo = False
         self.frames_morrendo = 0
         self.morrendo_index = 0
         self.total_morrendo = 6
         self.morrendo_sprite = pygame.image.load('Assets/morrendo.png')
 
+        self.invincibility_timer = 0
+        self.invincibility_max_timer = 0
+        self.is_invincible = False
+        self.timer_colete = 0
 
     @staticmethod
     def check_collision(next_position, board, direction):
@@ -100,22 +105,43 @@ class Player:
     def put_bomb(self):
         if self.active_bombs < self.max_bombs:
             position = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
-            bomb = Bomba(self.bomb_power, position[0], position[1])
-            self.bombs.append(bomb)
-            self.active_bombs += 1
+            if Stage.stage.board[position[0]][position[1]] != BlockStatus.BOMBA:
+                bomb = Bomba(self.bomb_power, position[0], position[1], self.bomb_type)
+                self.bombs.append(bomb)
+                Stage.stage.bombas.append(bomb)
+                self.active_bombs += 1
 
-    def update(self, screen):
+    def pegar_colete(self):
+        self.timer_colete += 15 * Configuration.get_config().game_fps
+        self.is_invincible = True
+
+    def update(self, screen, frames):
+
+        if self.timer_colete > 0:
+            self.timer_colete -= 1
+            if self.timer_colete == 0:
+                self.is_invincible = False
+
         # Create a copy of the list to iterate over
-
         if self.is_morrendo:
-            self.frames_morrendo += 1
-            if self.frames_morrendo >= 10:
-                self.frames_morrendo = 0
-                self.morrendo_index += 1
-                if self.morrendo_index == self.total_morrendo:
-                    self.isAlive = False
-            pass
-        elif self.isAlive:
+            self.is_invincible = False
+            if self.vidas == 0:
+                self.frames_morrendo += 1
+                if self.frames_morrendo >= 10:
+                    self.frames_morrendo = 0
+                    self.morrendo_index += 1
+                    if self.morrendo_index == self.total_morrendo:
+                        self.isAlive = False
+            else:
+                self.invincibility_timer += 1
+                self.is_invincible = True
+                if self.invincibility_timer > 60:
+                    self.invincibility_timer = 0
+                    self.vidas -= 1
+                    self.is_morrendo = False
+                    self.is_invincible = False
+
+        if self.isAlive:
             bombs_copy = self.bombs[:]
             board = Stage.stage.board
 
@@ -123,7 +149,6 @@ class Player:
                 bomb.update(screen)
                 if bomb.is_exploded:
                     # Remove the bomb from the original list
-
                     bomb_i = bomb.position[0]
                     bomb_j = bomb.position[1]
                     board[bomb_i][bomb_j] = BlockStatus.CLEAR
@@ -151,7 +176,7 @@ class Player:
                         else:
                             break
 
-
+                    Stage.stage.bombas.remove(bomb)
                     self.bombs.remove(bomb)
                     self.active_bombs -= 1
 
@@ -166,17 +191,17 @@ class Player:
                         board[matrix_pos[0]][matrix_pos[1]] = BlockStatus.CLEAR
                         break
 
-
-
-            if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.FIRE:
-                self.is_morrendo = True
-
+            if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.FIRE and not self.is_invincible:
+                 self.is_morrendo = True
+                 self.is_invincible = True
 
         if self.isAlive:
-            self.draw(screen)
+            self.draw(screen, frames)
 
-    def draw(self, screen):
-        if not self.is_morrendo:
+    def draw(self, screen, frames):
+        if self.is_invincible and frames % 15 > 7:
+            return
+        if not self.is_morrendo or self.vidas > 0:
             frame = self.sprite.subsurface((self.frame_index[0] * self.frame_width, self.frame_index[1] * self.frame_height,
                                             self.frame_width - 1, self.frame_height - 1))
             frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)

@@ -28,11 +28,18 @@ class Game:
             if event.type == pygame.QUIT:
                 self.is_running = False
                 pygame.quit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_j:
-                    self.player.put_bomb()
+            if not self.player.is_morrendo or self.player.is_invincible:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_j:
+                        self.player.put_bomb()
+                    elif event.key == pygame.K_k:
+                        if self.player.bomb_type == 'relogio':
+                            for i in self.player.bombs:
+                                if i.current_type == 'relogio':
+                                    i.bomb_types['relogio']['enable'](i)
+                                    break
 
-        if not self.player.is_morrendo:
+        if not self.player.is_morrendo or self.player.is_invincible:
             keys = pygame.key.get_pressed()
 
             if keys[pygame.K_a]:
