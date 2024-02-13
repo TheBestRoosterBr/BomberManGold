@@ -69,6 +69,6 @@ class PowerUp:
         elif self.num == PowerUpEnum.Colete:
             player.pegar_colete()
         elif self.num == PowerUpEnum.Caveira:
-            pass
+            player.randon_caveira()
 
 

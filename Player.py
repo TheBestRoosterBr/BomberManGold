@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 import PowerUp
@@ -39,15 +41,47 @@ class Player:
         self.is_invincible = False
         self.timer_colete = 0
 
+        self.caveira = {
+            'enabled': False,
+            'type': '',
+        }
+
+    def randon_caveira(self):
+        self.caveira['enabled'] = True
+        types = [
+            'disable_bombs',
+            'place_bombs',
+            'inverter',
+            'speed_up',
+            'speed_down'
+        ]
+        self.caveira['type'] = types[random.randint(0, 4)]
+
+    def disable_caveira(self):
+        self.caveira = {
+            'enabled': False,
+            'type': '',
+        }
+
     @staticmethod
     def check_collision(next_position, board, direction):
         matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], direction)
         return (board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR or
                 BlockStatus.POWER_UP <= board[int(matrix_pos[0])][int(matrix_pos[1])] <= BlockStatus.POWER_UP + 9)
 
-    def move_left(self, frames, board):
+    def move_left(self, frames, board, check_caveira=True):
+
+        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
+            self.move_right(frames, board, check_caveira=False)
+            return
+
         if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0)):
-            self.position[0] -= self.speed
+            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
+                self.position[0] -= 20
+            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
+                self.position[0] -= 1
+            else:
+                self.position[0] -= self.speed
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
@@ -56,9 +90,19 @@ class Player:
         self.frame_index[1] = 0
         self.last_state = 0
 
-    def move_right(self, frames, board):
+    def move_right(self, frames, board, check_caveira=True):
+        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
+            self.move_left(frames, board, check_caveira=False)
+            return
+
         if self.check_collision((self.position[0] + self.speed, self.position[1]), board, (1, 0)):
-            self.position[0] += self.speed
+
+            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
+                    self.position[0] += 20
+            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
+                    self.position[0] += 1
+            else:
+                self.position[0] += self.speed
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
@@ -67,9 +111,20 @@ class Player:
         self.frame_index[1] = 1
         self.last_state = 1
 
-    def move_up(self, frames, board):
+    def move_up(self, frames, board, check_caveira=True):
+
+        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
+            self.move_down(frames, board, check_caveira=False)
+            return
+
         if self.check_collision((self.position[0], self.position[1] - self.speed), board, (0, -1)):
-            self.position[1] -= self.speed
+
+            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
+                self.position[1] -= 20
+            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
+                self.position[1] -= 1
+            else:
+                self.position[1] -= self.speed
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
@@ -78,9 +133,19 @@ class Player:
         self.frame_index[1] = 0
         self.last_state = 2
 
-    def move_down(self, frames, board):
+    def move_down(self, frames, board, check_caveira=True):
+
+        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
+            self.move_up(frames, board, check_caveira=False)
+            return
+
         if self.check_collision((self.position[0], self.position[1] + self.speed), board, (0, 1)):
-            self.position[1] += self.speed
+            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
+                self.position[1] += 20
+            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
+                self.position[1] += 1
+            else:
+                self.position[1] += self.speed
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
@@ -103,6 +168,9 @@ class Player:
             self.frame_index[1] = 1
 
     def put_bomb(self):
+        if self.caveira['enabled'] and self.caveira['type'] == 'disable_bombs':
+            return
+
         if self.active_bombs < self.max_bombs:
             position = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
             if Stage.stage.board[position[0]][position[1]] != BlockStatus.BOMBA:
@@ -116,6 +184,8 @@ class Player:
         self.is_invincible = True
 
     def update(self, screen, frames):
+        if self.caveira['enabled'] and self.caveira['type'] == 'place_bombs':
+            self.put_bomb()
 
         if self.timer_colete > 0:
             self.timer_colete -= 1

@@ -102,7 +102,7 @@ class Stage:
             0b1111100,
             0b1111110,
         ]
-        self.power_up_sprite = pygame.image.load("Assets/powerUpQueimando.png")
+        self.power_up_sprite = pygame.image.load("Assets/power_up_queimando.png")
         self.power_up_explodindo_index = [
             0b10000001000000,
             0b11000001000000,
