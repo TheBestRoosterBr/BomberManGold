@@ -199,17 +199,55 @@ class Audio:
             True: 'speaker',
             False: 'mute'
         }
+        size = (300, 200)
+        pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
+        pos_y = Configuration.get_config().screen_height / 2 - size[1] / 2
+        self.rect = pygame.Rect(pos_x, pos_y, size[0], size[1])
 
-        self.button = ImageButton(360, 360, 100, 100, 'Assets/' + self.spr_path[self.enabled] + '.png')
+        self.button = ImageButton(pos_x + 20, pos_y + 100 - 20 + 2, 40, 40, 'Assets/' + self.spr_path[self.enabled] + '.png')
         self.font_path = "./Fonts/nougat.ttf"
         self.font = pygame.font.Font(self.font_path, 40)
-        self.foto_pos = [360, 360]
+
+        self.load_volume()
 
         self.Confirmar = ImageButton(944, 540, 64, 16, "Assets/Button.png", (256, 64))
         self.Voltar = ImageButton(404, 540, 64, 16, "Assets/Button.png", (256, 64))
         # Cores padrão
         self.default_color = (255, 255, 255)
         self.hovered_color = (0, 120, 255)
+
+    @staticmethod
+    def circle_point_collision(cx, cy, r, px, py):
+        # Calculate the distance between the circle's center and the point
+        distance = ((px - cx) ** 2 + (py - cy) ** 2) ** 0.5
+
+        # Check if the distance is less than or equal to the circle's radius
+        return distance <= r
+
+
+    def save_volume(self, volume):
+        Configuration.get_config().volume = volume
+        Configuration.get_config().save_in_file()
+        self.load_volume()
+
+    def load_volume(self):
+        size = (300, 200)
+        pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
+        pos_y = Configuration.get_config().screen_height / 2 - size[1] / 2
+
+        self.bar = pygame.Rect(pos_x + 70, pos_y + 100, 200, 4)
+        self.volume_bar = pygame.Rect(pos_x + 70, pos_y + 100, 200 * Configuration.get_config().volume, 4)
+        self.radius_bolinha = 8
+        self.posicao_bolinha = (self.volume_bar.x + self.volume_bar.width, self.volume_bar.y + self.radius_bolinha - self.volume_bar.height - 2)
+
+        if Configuration.get_config().volume <= 0.05:
+            Configuration.get_config().audio = False
+        else:
+            Configuration.get_config().audio = True
+
+        self.button = ImageButton(pos_x + 20, pos_y + 100 - 20 + 2, 40, 40,
+                                  'Assets/' + self.spr_path[Configuration.get_config().audio] + '.png')
+
 
     def draw_text(self, screen, text, rect, color):
         text_surface = self.font.render(text, True, color)
@@ -245,10 +283,18 @@ class Audio:
                     option.controller = Controller.AUDIO
                 elif controle_clicked:
                     option.controller = Controller.CONTROLES
-
+                elif self.bar.collidepoint(*pos):
+                    new_volume = (pos[0] - self.bar.x) / 200
+                    self.save_volume(new_volume)
+                    pass
+        pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect)
         self.button.draw(screen)
+        pygame.draw.rect(screen, color=(100, 100, 100), rect=self.bar)
+        pygame.draw.rect(screen, color=(0, 0, 90), rect=self.volume_bar)
+        pygame.draw.circle(screen, (0, 0, 90), self.posicao_bolinha, self.radius_bolinha)
         self.Voltar.draw(screen)
         self.Confirmar.draw(screen)
+
         self.draw_text(screen, "Confirmar", self.Confirmar.rect, self.default_color)
         self.draw_text(screen, "Voltar", self.Voltar.rect, self.default_color)
 
