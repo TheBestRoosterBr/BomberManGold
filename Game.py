@@ -58,26 +58,25 @@ class Game:
             self.is_running = False
             self.game_result = 1
             return
-        return self.draw(lucky_block_position)
+        self.draw(lucky_block_position)
 
     def draw(self, lucky_block_position=(0, 0)):
         self.screen.fill((0, 0, 0))
         self.stage.draw(self.screen, lucky_block_position)
         result = self.player.update(self.screen, self.frames)
+        if result == 1:
+            self.is_running = False
+            self.game_result = 0
+            return
         pos = self.player.position
         for i in range(len(self.enemies)):
             self.enemies[i].update(self.screen, Stage.screen_pos_to_matrix(pos[0], pos[1]))
         pygame.display.update()
         self.clock.tick(self.config.game_fps)
-        return result
 
     def run(self, lucky_block_position=(0, 0)):
         while self.is_running:
-            self.game_result = self.update(lucky_block_position)
-            if self.game_result:
-                return True
-            if not self.player.isAlive:
-                return False
-        return False
+            self.update(lucky_block_position)
+        return self.game_result
 
 

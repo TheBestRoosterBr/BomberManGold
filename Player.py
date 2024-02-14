@@ -271,14 +271,14 @@ class Player:
                         board[matrix_pos[0]][matrix_pos[1]] = BlockStatus.CLEAR
                         break
             elif board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.PORTAL_ABERTO:
-                return True
+                return 1
             if board[matrix_pos[0]][matrix_pos[1]] == BlockStatus.FIRE and not self.is_invincible:
                  self.is_morrendo = True
                  self.is_invincible = True
 
         if self.isAlive:
             self.draw(screen, frames)
-        return False
+        return 0
 
     def draw(self, screen, frames):
         if self.is_invincible and frames % 15 > 7:

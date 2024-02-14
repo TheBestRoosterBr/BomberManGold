@@ -48,27 +48,25 @@ class Level1World1(Level):
         Stage.stage.board[self.lucky_block_position[0]][self.lucky_block_position[1]] = BlockStatus.LUCKY_BLOCK
         koopa1 = Koopa(1, 16)
         koopa2 = Koopa(3, 13)
-        bill_spawner1 = BillSpawner(1, 7, True)
-        bill_spawner2 = BillSpawner(1, 12, True)
-        bill_spawner3 = BillSpawner(17, 12)
-        bill_spawner4 = BillSpawner(17, 12)
+        bill_spawner1 = BillSpawner(5, 1, True)
+        bill_spawner2 = BillSpawner(12, 1, True)
+        bill_spawner3 = BillSpawner(7, 12)
         self.enemies.append(koopa1)
         self.enemies.append(koopa2)
         self.enemies.append(bill_spawner1)
         self.enemies.append(bill_spawner2)
         self.enemies.append(bill_spawner3)
-        self.enemies.append(bill_spawner4)
 
     def run(self, screen):
         self.alter_stage()
         game = Game(screen, enemies=self.enemies)
         self.game_result = game.run(self.lucky_block_position)
         resultado = TelaResultado(screen)
-        if not self.game_result:
+        if self.game_result == 1:
             resultado.screen_derrota()
         elif self.game_result == 0:
             resultado.screen_vitoria()
-            exit(1)
+
 
 
 class Level2World1(Level):
