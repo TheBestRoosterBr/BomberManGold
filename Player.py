@@ -182,7 +182,8 @@ class Player:
 
         if self.active_bombs < self.max_bombs:
             position = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
-            if Stage.stage.board[position[0]][position[1]] != BlockStatus.BOMBA:
+            if Stage.stage.board[position[0]][position[1]] != BlockStatus.BOMBA and Stage.stage.board[position[0]][position[1]] != BlockStatus.PORTAL_ABERTO\
+                    and Stage.stage.board[position[0]][position[1]] != BlockStatus.PORTAL_FECHADO and Stage.stage.board[position[0]][position[1]] != BlockStatus.LUCKY_BLOCK:
                 bomb = Bomba(self.bomb_power, position[0], position[1], self.bomb_type)
                 self.bombs.append(bomb)
                 Stage.stage.bombas.append(bomb)
