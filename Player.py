@@ -307,4 +307,3 @@ class Player:
                  self.frame_width - 1, self.frame_height - 1))
             frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
         screen.blit(frame, (self.position[0], self.position[1]))
-
