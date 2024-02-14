@@ -62,22 +62,22 @@ def screen_pos_to_matrix(screen_x, screen_y):
     return i, j
 
 
-def screen_pos_to_matrix_movimentation(screen_x, screen_y, direction):
-    config = Configuration.get_config()
-    cell_size = config.cell_size[0]
-    offset_x = config.offset_x
-    offset_y = config.offset_y
+def screen_pos_to_matrix_movimentation(screen_x, screen_y, current_position, direction):
+        config = Configuration.get_config()
+        cell_size = config.cell_size[0]
+        offset_x = config.offset_x
+        offset_y = config.offset_y
 
-    screen_x = screen_x + (direction[0] * cell_size/2)
-    screen_y = screen_y + (direction[1] * cell_size/2)
+        screen_x = screen_x + (direction[0] * cell_size / 2)
+        screen_y = screen_y + (direction[1] * cell_size / 2)
 
-    i = (screen_y - offset_y) / cell_size
-    j = (screen_x - offset_x) / cell_size
+        i = (screen_y - offset_y) / cell_size
+        j = (screen_x - offset_x) / cell_size
 
-    i = round(i)
-    j = round(j)
+        i = round(i)
+        j = round(j)
 
-    return i, j
+        return i, j
 
 
 def matrix_to_screen_pos(i, j):
@@ -100,7 +100,7 @@ class Stage:
                                                        self.config.cell_size)
         self.spr_lucky_block = pygame.transform.scale(pygame.image.load("Assets/brickBlockFase2.png"),
                                                       self.config.cell_size)
-        self.spr_chave = pygame.transform.scale(pygame.image.load("Assets/cadeado.png"),
+        self.spr_chave = pygame.transform.scale(pygame.image.load("Assets/chave.png"),
                                                       self.config.cell_size)
         self.bloco_explodindo_index = [
             0b1000000,

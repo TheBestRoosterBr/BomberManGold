@@ -50,6 +50,7 @@ class PowerUp:
         screen.blit(spr_bord, (pos[0], pos[1]))
 
     def get_power_up(self, player):
+        player.disable_caveira()
         if self.num == PowerUpEnum.Foguinho:
             player.bomb_power += 1
         elif self.num == PowerUpEnum.FoguinhoGold:

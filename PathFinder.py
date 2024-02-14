@@ -138,4 +138,3 @@ def path_finder(player_matrix_position, actual_position):
 
     # Run the A* search algorithm
     return a_star_search(grid, src, dest)
-
