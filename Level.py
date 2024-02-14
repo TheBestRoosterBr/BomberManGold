@@ -22,6 +22,8 @@ class Level:
             resultado.screen_derrota()
         elif self.game_result == 0:
             resultado.screen_vitoria()
+        elif self.game_result == 3:
+            pass
 
 
 class Level1World1(Level):

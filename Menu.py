@@ -129,16 +129,16 @@ class MenuPlay:
                                 option = 0
                                 self.is_running = False
                             elif i == 2:
-                                pygame.quit()
+                                option = 2
+                                self.is_running = False
 
             pygame.display.flip()
 
         if option == 0:
             world = World1(self.screen)
             world.main_loop()
-        elif option == 1:
-            resultado = TelaResultado(self.screen)
-            resultado.screen_derrota()
+        elif option == 2:
+            pass
 
     def run_game(self):
         game = Game(self.screen)

@@ -5,6 +5,7 @@ import Enemy
 import Stage
 import pause
 from Enemy import Koopa
+from Options import Options
 from Player import Player
 import Stage
 
@@ -21,7 +22,7 @@ class Game:
         self.frames = 0
         self.clock = pygame.time.Clock()
         self.enemies = enemies
-        self.game_result = 0 # 0 for win, 1 to lose, 2 for draw
+        self.game_result = 0 # 0 for win, 1 to lose, 2 for draw, 3 for resign
         self.pause = pause.Pause()
 
     def update(self, lucky_block_position=(0, 0)):
@@ -35,7 +36,14 @@ class Game:
             if not self.player.is_morrendo or self.player.is_invincible:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.pause.view_paused(self.screen)
+                        op = self.pause.view_paused(self.screen)
+                        if op == 1:
+                            options = Options()
+                            options.main_loop(self.screen)
+                        elif op == 2:
+                            self.is_running = False
+                            self.game_result = 3
+                            break
 
                     if event.key == pygame.K_j:
                         self.player.put_bomb()

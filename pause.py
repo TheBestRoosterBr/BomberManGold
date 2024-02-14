@@ -109,9 +109,5 @@ class Pause:
 
         return self.selected_option
 
-    @staticmethod
-    def quit_game():
-        pygame.quit()
-        sys.exit()
 
 
