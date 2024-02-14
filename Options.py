@@ -54,6 +54,7 @@ class Perfil:
         # Cores padrão
         self.default_color = (255, 255, 255)
         self.hovered_color = (0, 120, 255)
+        self.load()
 
     def draw_text(self, screen, text, rect, color):
         text_surface = self.font.render(text, True, color)
@@ -63,7 +64,15 @@ class Perfil:
         screen.blit(text_surface, text_rect)
 
     def save(self):
-        pass # todo: metodo pra armazenar as informacoes do usuario
+        players = ['', 'Preto', 'Vermelho', 'Azul']
+        Configuration.get_config().player = players[self.index_foto]
+        Configuration.get_config().save_in_file()
+
+
+    def load(self):
+        players = ['', 'Preto', 'Vermelho', 'Azul']
+        self.index_foto = players.index(Configuration.get_config().player)
+
 
     def update(self, screen, option):
 
@@ -83,10 +92,10 @@ class Perfil:
                 if self.button1.is_clicked(pos):
                     self.index_foto -= 1
                     if self.index_foto < 0:
-                        self.index_foto = 4
+                        self.index_foto = 3
                 elif self.button2.is_clicked(pos):
                     self.index_foto += 1
-                    if self.index_foto > 4:
+                    if self.index_foto > 3:
                         self.index_foto = 0
                 elif self.Confirmar.is_clicked(pos):
                     self.save()

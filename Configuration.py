@@ -22,4 +22,25 @@ class Configuration:
         self.foto = 0
         self.volume = 1.0
         self.audio = True
+        self.player = ''
+        self.load_from_file()
 
+    def load_from_file(self):
+        with open('player_data.properties', 'r') as arquivo:
+            linha = arquivo.readline()
+
+            while linha != "":
+
+                prop = linha.split('=')
+                if len(prop) <= 1:
+                    break
+                prop[1] = prop[1].replace('\n', '')
+                if prop[0] == 'color':
+                    self.player = prop[1]
+
+                linha = arquivo.readline()
+
+
+    def save_in_file(self):
+        with open('player_data.properties', 'w') as f:
+            f.write('color=' + self.player + '\n')
