@@ -46,12 +46,12 @@ def a_star_search(grid, src, dest):
     # Check if the source and destination are valid
     if not is_valid(src[0], src[1]) or not is_valid(dest[0], dest[1]):
         print("Alguem ta no lugar errado")
-        return best_direction
+        return [1, 0]
 
     # Check if the source and destination are unblocked
     if not is_unblocked(grid, src[0], src[1]) or not is_unblocked(grid, dest[0], dest[1]):
         print("alguem ta no lugar errado")
-        return best_direction
+        return [1, 0]
 
     # Check if we are already at the destination
     if is_destination(src[0], src[1], dest):

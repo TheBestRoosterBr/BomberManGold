@@ -32,12 +32,12 @@ class Level1World1(Level):
             [1, 0, 0, 2, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 17, 1],
             [1, 0, 2, 0, 2, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
             [1, 2, 1, 0, 0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 0, 0, 0, 1],
-            [1, 0, 2, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 2, 1, 2, 1],
-            [1, 0, 0, 2, 0, 0, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 2, 0, 1, 0, 1, 2, 1, 2, 0, 0, 1, 0, 1, 2, 1, 2, 1],
+            [1, 0, 0, 2, 0, 0, 2, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 1, 2, 1, 0, 2, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 1, 0, 1, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 1, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 1, 2, 1, 1, 2, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-            [1, 0, 0, 2, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 2, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 1, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1],
             [1, 0, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 1],
             [1, 0, 1, 2, 1, 0, 1, 0, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1],
@@ -51,11 +51,20 @@ class Level1World1(Level):
         bill_spawner1 = BillSpawner(5, 1, True)
         bill_spawner2 = BillSpawner(12, 1, True)
         bill_spawner3 = BillSpawner(7, 12)
+        flor1 = Fulor(9, 9)
+        flor2 = Fulor(7, 14)
+        flor3 = Fulor(3, 11)
+        flor4 = Fulor(11, 6)
         self.enemies.append(koopa1)
         self.enemies.append(koopa2)
         self.enemies.append(bill_spawner1)
         self.enemies.append(bill_spawner2)
         self.enemies.append(bill_spawner3)
+        self.enemies.append(flor1)
+        self.enemies.append(flor2)
+        self.enemies.append(flor3)
+        self.enemies.append(flor4)
+
 
     def run(self, screen):
         self.alter_stage()
