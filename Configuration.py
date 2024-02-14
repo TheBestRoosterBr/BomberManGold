@@ -20,3 +20,4 @@ class Configuration:
         self.level = 0
         self.map_size = (936, 648)
         self.foto = 0
+        self.volume = 1.0
