@@ -65,12 +65,30 @@ class Game:
             return
 
         for enemy in self.enemies:
-            if not isinstance(enemy, Enemy.BillSpawner):
-                if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == (enemy.position[0], enemy.position[1]):
-                    self.player.morrer()
+            if enemy.is_morrendo:
+                if enemy.dead:
+                    self.enemies.remove(enemy)
             else:
-                if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == Stage.screen_pos_to_matrix(enemy.bill_pos[0], enemy.bill_pos[1]):
-                    self.player.morrer()
+                if isinstance(enemy, Enemy.BillSpawner):
+                    if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == Stage.screen_pos_to_matrix(enemy.bill_pos[0], enemy.bill_pos[1]):
+                        self.player.morrer()
+
+                elif isinstance(enemy, Enemy.MuxeguSpawner):
+                    for batman in enemy.muxegus:
+                        if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == Stage.screen_pos_to_matrix(batman.position[0], batman.position[1]):
+                            self.player.morrer()
+                elif isinstance(enemy, Enemy.Camaleao):
+                    for i in range(4):
+                        if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == (enemy.position[0] + i, enemy.position[1]):
+                            self.player.morrer()
+                elif isinstance(enemy, Enemy.GhostSpawner):
+                    for pantarma in enemy.ghosts:
+                        if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == Stage.screen_pos_to_matrix(pantarma.position[0], pantarma.position[1]):
+                            self.player.morrer()
+
+                else:
+                    if Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1]) == (enemy.position[0], enemy.position[1]):
+                        self.player.morrer()
 
         self.draw(lucky_block_position)
 

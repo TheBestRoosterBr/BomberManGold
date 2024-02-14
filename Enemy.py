@@ -1,8 +1,10 @@
 import pygame
 
+from BlockStatus import BlockStatus
 from Configuration import Configuration
 import PathFinder
 import Stage
+from SangueAnimation import SangueAnimation
 
 
 class Enemy:
@@ -11,6 +13,9 @@ class Enemy:
         self.damage = damage
         self.speed = speed
         self.frames = 0
+        self.dead = False
+        self.is_morrendo = False
+        self.death_animation = None
 
     def update(self, screen, player_board_position):
         pass
@@ -25,16 +30,25 @@ class Koopa(Enemy):
         self.sprite = pygame.image.load('Assets\Koopa.png')
         self.index = 0
         self.position = [x, y]
+        self.death_animation = None
 
     def update(self, screen, player_board_position):
-        # todo: deixar essa animacao lisa @Mota
-        self.frames += 1
-        if self.frames % 100 == 0:
-            self.index = 0 if self.index == 1 else 1
-            pos = PathFinder.path_finder(player_board_position, self.position)
-            self.position[0] += pos[0]
-            self.position[1] += pos[1]
-        self.draw(screen)
+
+        if Stage.stage.board[self.position[0]][self.position[1]] == BlockStatus.FIRE and not self.is_morrendo:
+            self.is_morrendo = True
+            self.death_animation = SangueAnimation(Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+
+        if self.is_morrendo:
+            if not self.dead:
+                self.dead = self.death_animation.update(screen)
+        else:
+            self.frames += 1
+            if self.frames % 100 == 0:
+                self.index = 0 if self.index == 1 else 1
+                pos = PathFinder.path_finder(player_board_position, self.position)
+                self.position[0] += pos[0]
+                self.position[1] += pos[1]
+            self.draw(screen)
 
     def draw(self, screen):
         spr = self.sprite.subsurface(self.index * 16, 0, 16, 27)
@@ -81,15 +95,24 @@ class Fulor(Enemy):
         self.sprite = pygame.image.load('Assets/florzinha.png')
         self.index = 0
         self.position = [x, y]
+        self.death_animation = None
 
     def update(self, screen, player_board_position):
-        self.frames += 1
-        if self.frames % 5 == 0:
-            self.index += 1
-            if self.index > 3:
-                self.index = 0
 
-        self.draw(screen)
+        if Stage.stage.board[self.position[0]][self.position[1]] == BlockStatus.FIRE and not self.is_morrendo:
+            self.is_morrendo = True
+            self.death_animation = SangueAnimation(Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+        if self.is_morrendo:
+            if not self.dead:
+                self.dead = self.death_animation.update(screen)
+        else:
+            self.frames += 1
+            if self.frames % 5 == 0:
+                self.index += 1
+                if self.index > 3:
+                    self.index = 0
+
+            self.draw(screen)
 
     def draw(self, screen):
         spr = self.sprite.subsurface(self.index * 18, 0, 18, 23)
@@ -104,6 +127,7 @@ class Muxegu(Enemy):
         self.size = [31, 34]
         self.index = [0, 0]
         pos = Stage.matrix_to_screen_pos(x, y)
+        self.death_animation = SangueAnimation(pos)
         self.position = [pos[0], pos[1]]
 
     def move_left(self):
@@ -142,19 +166,30 @@ class Muxegu(Enemy):
         self.index[1] = 0
 
     def update(self, screen, player_board_position):
-        self.frames += 1
-        if self.frames % 2 == 0:
-            my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
-            pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
-            if pos == (1, 0):
-                self.move_down()
-            elif pos == (-1, 0):
-                self.move_up()
-            elif pos == (0, 1):
-                self.move_right()
-            elif pos == (0, -1):
-                self.move_left()
-        self.draw(screen)
+
+        my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+        pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
+        my_pos = Stage.screen_pos_to_matrix_movimentation(self.position[0], self.position[1], None, pos)
+
+        if Stage.stage.board[my_pos[0]][my_pos[1]] == BlockStatus.FIRE and not self.is_morrendo:
+            self.is_morrendo = True
+            self.death_animation = SangueAnimation((self.position[0], self.position[1]))
+        if self.is_morrendo:
+            if not self.dead:
+                self.dead = self.death_animation.update(screen)
+
+        else:
+            self.frames += 1
+            if self.frames % 2 == 0:
+                if pos == (1, 0):
+                    self.move_down()
+                elif pos == (-1, 0):
+                    self.move_up()
+                elif pos == (0, 1):
+                    self.move_right()
+                elif pos == (0, -1):
+                    self.move_left()
+            self.draw(screen)
 
     def draw(self, screen):
         spr = self.sprite.subsurface(self.index[0] * self.size[0], self.index[1] * self.size[1],
@@ -202,6 +237,7 @@ class Ghost(Enemy):
         self.size = [16, 16]
         self.index = [0, 0]
         pos = Stage.matrix_to_screen_pos(x, y)
+
         self.position = [pos[0], pos[1]]
 
     def move_left(self):
@@ -240,19 +276,33 @@ class Ghost(Enemy):
         self.index[1] = 3
 
     def update(self, screen, player_board_position):
-        self.frames += 1
-        if self.frames % 2 == 0:
-            my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
-            pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
-            if pos == (1, 0):
-                self.move_down()
-            elif pos == (-1, 0):
-                self.move_up()
-            elif pos == (0, 1):
-                self.move_right()
-            elif pos == (0, -1):
-                self.move_left()
-        self.draw(screen)
+
+        my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+        pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
+        my_pos = Stage.screen_pos_to_matrix_movimentation(self.position[0], self.position[1], None, pos)
+
+        if Stage.stage.board[my_pos[0]][my_pos[1]] == BlockStatus.FIRE and not self.is_morrendo:
+            self.is_morrendo = True
+            self.death_animation = SangueAnimation((self.position[0], self.position[1]))
+
+
+        if self.is_morrendo:
+            if not self.dead:
+                self.dead = self.death_animation.update(screen)
+        else:
+            self.frames += 1
+            if self.frames % 2 == 0:
+                #my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+                pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
+                if pos == (1, 0):
+                    self.move_down()
+                elif pos == (-1, 0):
+                    self.move_up()
+                elif pos == (0, 1):
+                    self.move_right()
+                elif pos == (0, -1):
+                    self.move_left()
+            self.draw(screen)
 
     def draw(self, screen):
         spr = self.sprite.subsurface(self.index[0] * self.size[0], self.index[1] * self.size[1],
@@ -302,22 +352,31 @@ class Camaleao(Enemy):
         self.recharge_time = Configuration.get_config().game_fps * 7
         self.recharge_counter = 0
         self.on_fire = False
-
+        self.death_animation = None
 
     def update(self, screen, player_board_position):
-        self.frames += 1
-        self.recharge_counter += 1
-        if self.recharge_counter >= self.recharge_time:
-            self.recharge_counter = 0
-            self.on_fire = True
 
-        if self.on_fire:
-            if self.frames % 10 == 0:
-                self.index += 1
-                if self.index > 4:
-                    self.index = 0
+        if Stage.stage.board[self.position[0] + 3][self.position[1]] == BlockStatus.FIRE and not self.is_morrendo:
+            self.is_morrendo = True
+            self.death_animation = SangueAnimation(Stage.matrix_to_screen_pos(self.position[0] + 3, self.position[1]))
 
-        self.draw(screen)
+        if self.is_morrendo:
+            if not self.dead:
+                self.dead = self.death_animation.update(screen)
+        else:
+            self.frames += 1
+            self.recharge_counter += 1
+            if self.recharge_counter >= self.recharge_time:
+                self.recharge_counter = 0
+                self.on_fire = True
+
+            if self.on_fire:
+                if self.frames % 10 == 0:
+                    self.index += 1
+                    if self.index > 4:
+                        self.index = 0
+
+            self.draw(screen)
 
     def draw(self, screen):
         spr = self.sprite.subsurface(0, self.index * self.size[1], self.size[0], self.size[1])

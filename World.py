@@ -7,6 +7,7 @@ from Configuration import Configuration
 class World1:
     def __init__(self, screen):
         self.levels = []
+
         self.total_levels = self.load_levels() + 1  # start position
         self.sprite = pygame.image.load('Assets/World1Map.png')
         size = Configuration.get_config().map_size
