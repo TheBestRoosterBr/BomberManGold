@@ -55,6 +55,7 @@ class Bomba:
                     self.frame_index = 0
             self.draw(screen)
 
+
     def explode(self, screen):
         if self.frames % (Configuration.get_config().game_fps/10) == 0:
             self.explosion_index[1] += 1
@@ -183,6 +184,7 @@ class Bomba:
                         bomba.bomb_types[bomba.current_type]['enable'](bomba)
             elif next_block == BlockStatus.DESTRUCTIBLE_WALL or next_block == BlockStatus.LUCKY_BLOCK:
                 Stage.stage.board[self.position[0]][position] = BlockStatus.DESTROY_BLOCK
+
                 if self.current_type != 'espinho':
                     break
             elif 5 <= next_block <= 14:
