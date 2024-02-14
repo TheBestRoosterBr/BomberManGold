@@ -34,6 +34,7 @@ class Player:
         self.frames_morrendo = 0
         self.morrendo_index = 0
         self.total_morrendo = 6
+        self.sound_morrendo = pygame.mixer.Sound('Sounds/on-fire.ogg')
         self.morrendo_sprite = pygame.image.load('Assets/morrendo.png')
 
         self.invincibility_timer = 0
@@ -197,6 +198,7 @@ class Player:
         if not self.is_invincible:
             self.is_morrendo = True
             self.is_invincible = True
+            self.sound_morrendo.play()
 
     def update(self, screen, frames):
         if self.isAlive and self.caveira['enabled'] and self.caveira['type'] == 'place_bombs':
