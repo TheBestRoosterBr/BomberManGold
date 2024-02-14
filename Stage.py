@@ -151,13 +151,13 @@ class Stage:
                     index = self.bloco_explodindo_index.index(self.board[i][j])
                     frame = self.bloco_explodindo.subsurface(index * 16, 0, 16, 16)
                     frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
-                    pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
+                    pygame.draw.rect(screen, self.background_color, pygame.Rect(position, self.config.cell_size), 0)
                     screen.blit(frame, matrix_to_screen_pos(i, j))
                 elif self.board[i][j] & 0b10000001000000 == 0b10000001000000:
                     index = self.power_up_explodindo_index.index(self.board[i][j])
                     frame = self.power_up_sprite.subsurface(index * 16, 0, 16, 16)
                     frame = pygame.transform.scale(frame, Configuration.get_config().cell_size)
-                    pygame.draw.rect(screen, (0, 100, 0), pygame.Rect(position, self.config.cell_size), 0)
+                    pygame.draw.rect(screen, self.background_color, pygame.Rect(position, self.config.cell_size), 0)
                     screen.blit(frame, matrix_to_screen_pos(i, j))
 
         for i in self.power_ups:
@@ -165,7 +165,7 @@ class Stage:
 
         self.update(lucky_block_position)
 
-    def update(self, lucky_block_position = (0, 0)):
+    def update(self, lucky_block_position=(0, 0)):
 
         self.frames += 1
         if self.frames >= 6:

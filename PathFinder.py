@@ -25,8 +25,8 @@ def is_valid(row, col):
 
 
 # Check if a cell is unblocked
-def is_unblocked(grid, row, col):
-    return grid[row][col] == 0
+def is_unblocked(grid, row, col, blocked):
+    return grid[row][col] == 0 if blocked else True
 
 
 # Check if a cell is the destination
@@ -41,17 +41,18 @@ def calculate_h_value(row, col, dest):
 
 
 # Implement the A* search algorithm
-def a_star_search(grid, src, dest):
+def a_star_search(grid, src, dest, blocked=True):
     best_direction = [0, 0]
     # Check if the source and destination are valid
     if not is_valid(src[0], src[1]) or not is_valid(dest[0], dest[1]):
         print("Alguem ta no lugar errado")
-        return [1, 0]
+        return best_direction
 
-    # Check if the source and destination are unblocked
-    if not is_unblocked(grid, src[0], src[1]) or not is_unblocked(grid, dest[0], dest[1]):
-        print("alguem ta no lugar errado")
-        return [1, 0]
+    if blocked:
+        # Check if the source and destination are unblocked
+        if not is_unblocked(grid, src[0], src[1], blocked) or not is_unblocked(grid, dest[0], dest[1]):
+            print("alguem ta no lugar errado")
+            return [1, 0]
 
     # Check if we are already at the destination
     if is_destination(src[0], src[1], dest):
@@ -96,7 +97,7 @@ def a_star_search(grid, src, dest):
             new_j = j + dir[1]
 
             # If the successor is valid, unblocked, and not visited
-            if is_valid(new_i, new_j) and is_unblocked(grid, new_i, new_j) and not closed_list[new_i][new_j]:
+            if is_valid(new_i, new_j) and is_unblocked(grid, new_i, new_j, blocked) and not closed_list[new_i][new_j]:
                 # If the successor is the destination
                 if is_destination(new_i, new_j, dest):
                     # Set the parent of the destination cell
@@ -139,3 +140,13 @@ def path_finder(player_matrix_position, actual_position):
     # Run the A* search algorithm
     return a_star_search(grid, src, dest)
 
+def path_finder_without_block(player_matrix_position, actual_position):
+    # Define the grid (0 for unblocked, everything else for blocked)
+    grid = Stage.stage.board
+
+    # Define the source and destination
+    src = actual_position
+    dest = player_matrix_position
+
+    # Run the A* search algorithm
+    return a_star_search(grid, src, dest, False)

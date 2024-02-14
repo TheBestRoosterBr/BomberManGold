@@ -8,7 +8,11 @@ class World1:
     def __init__(self, screen):
         self.levels = []
         level1 = Level.Level1World1()
+        level2 = Level.Level2World1()
+        level3 = Level.Level3World1()
         self.levels.append(level1)
+        self.levels.append(level2)
+        self.levels.append(level3)
         self.total_levels = 5
         self.sprite = pygame.image.load('Assets/World1Map.png')
         size = Configuration.get_config().map_size

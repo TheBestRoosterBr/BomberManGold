@@ -30,7 +30,7 @@ class Koopa(Enemy):
         # todo: deixar essa animacao lisa @Mota
         self.frames += 1
         if self.frames % 100 == 0:
-            self.index = self.frames % 2
+            self.index = 0 if self.index == 1 else 1
             pos = PathFinder.path_finder(player_board_position, self.position)
             self.position[0] += pos[0]
             self.position[1] += pos[1]
@@ -94,4 +94,235 @@ class Fulor(Enemy):
     def draw(self, screen):
         spr = self.sprite.subsurface(self.index * 18, 0, 18, 23)
         spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
+        screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+
+
+class Muxegu(Enemy):
+    def __init__(self, x, y):
+        super().__init__()
+        self.sprite = pygame.image.load('Assets/Muxegu.png')
+        self.size = [31, 34]
+        self.index = [0, 0]
+        pos = Stage.matrix_to_screen_pos(x, y)
+        self.position = [pos[0], pos[1]]
+
+    def move_left(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 3:
+                self.index[0] = 0
+
+        self.position[0] -= 1
+        self.index[1] = 3
+
+    def move_right(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 3:
+                self.index[0] = 0
+        self.position[0] += 1
+        self.index[1] = 2
+
+    def move_up(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 3:
+                self.index[0] = 0
+
+        self.position[1] -= 1
+        self.index[1] = 1
+
+    def move_down(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 3:
+                self.index[0] = 0
+
+        self.position[1] += 1
+        self.index[1] = 0
+
+    def update(self, screen, player_board_position):
+        self.frames += 1
+        if self.frames % 2 == 0:
+            my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+            pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
+            if pos == (1, 0):
+                self.move_down()
+            elif pos == (-1, 0):
+                self.move_up()
+            elif pos == (0, 1):
+                self.move_right()
+            elif pos == (0, -1):
+                self.move_left()
+        self.draw(screen)
+
+    def draw(self, screen):
+        spr = self.sprite.subsurface(self.index[0] * self.size[0], self.index[1] * self.size[1],
+                                     self.size[0], self.size[1])
+        spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
+        screen.blit(spr, self.position)
+
+
+class MuxeguSpawner(Enemy):
+    def __init__(self, x, y):
+        super().__init__()
+        self.sprite = pygame.image.load('Assets/muxeguSpawner.png')
+        self.index = 0
+        self.position = [x, y]
+        self.muxegus = []
+        self.creating = True
+        self.creatingFrames = 0
+
+    def update(self, screen, player_board_position):
+        self.frames += 1
+        if self.frames % Configuration.get_config().game_fps * 10 == 0:
+            self.creating = True
+
+        if self.creating:
+            self.creatingFrames += 1
+            if self.creatingFrames % Configuration.get_config().game_fps == 0:
+                self.muxegus.append(Muxegu(self.position[0], self.position[1]))
+            if self.creatingFrames > Configuration.get_config().game_fps * 4:
+                self.creating = False
+
+        for i in range(len(self.muxegus)):
+            self.muxegus[i].update(screen, player_board_position)
+        self.draw(screen)
+
+    def draw(self, screen):
+
+        spr = pygame.transform.scale(self.sprite, Configuration.get_config().cell_size)
+        screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+
+
+class Ghost(Enemy):
+    def __init__(self, x, y):
+        super().__init__()
+        self.sprite = pygame.image.load('Assets/ghost.png')
+        self.size = [16, 16]
+        self.index = [0, 0]
+        pos = Stage.matrix_to_screen_pos(x, y)
+        self.position = [pos[0], pos[1]]
+
+    def move_left(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 2:
+                self.index[0] = 0
+
+        self.position[0] -= 1
+        self.index[1] = 0
+
+    def move_right(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 2:
+                self.index[0] = 0
+        self.position[0] += 1
+        self.index[1] = 1
+
+    def move_up(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 2:
+                self.index[0] = 0
+
+        self.position[1] -= 1
+        self.index[1] = 2
+
+    def move_down(self):
+        if self.frames % 10 == 0:
+            self.index[0] += 1
+            if self.index[0] > 2:
+                self.index[0] = 0
+
+        self.position[1] += 1
+        self.index[1] = 3
+
+    def update(self, screen, player_board_position):
+        self.frames += 1
+        if self.frames % 2 == 0:
+            my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+            pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
+            if pos == (1, 0):
+                self.move_down()
+            elif pos == (-1, 0):
+                self.move_up()
+            elif pos == (0, 1):
+                self.move_right()
+            elif pos == (0, -1):
+                self.move_left()
+        self.draw(screen)
+
+    def draw(self, screen):
+        spr = self.sprite.subsurface(self.index[0] * self.size[0], self.index[1] * self.size[1],
+                                     self.size[0], self.size[1])
+        spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
+        screen.blit(spr, self.position)
+
+
+class GhostSpawner(Enemy):
+    def __init__(self, x, y):
+        super().__init__()
+        self.sprite = pygame.image.load('Assets/ghostSpawner.png')
+        self.index = 0
+        self.position = [x, y]
+        self.ghosts = []
+        self.creating = True
+        self.creatingFrames = 0
+
+    def update(self, screen, player_board_position):
+        self.frames += 1
+        if self.frames % Configuration.get_config().game_fps * 10 == 0:
+            self.creating = True
+
+        if self.creating:
+            self.creatingFrames += 1
+            if self.creatingFrames % Configuration.get_config().game_fps == 0:
+                self.ghosts.append(Ghost(self.position[0], self.position[1]))
+            if self.creatingFrames > Configuration.get_config().game_fps * 4:
+                self.creating = False
+
+        for i in range(len(self.ghosts)):
+            self.ghosts[i].update(screen, player_board_position)
+        self.draw(screen)
+
+    def draw(self, screen):
+        spr = pygame.transform.scale(self.sprite, Configuration.get_config().cell_size)
+        screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+
+
+class Camaleao(Enemy):
+    def __init__(self, x, y):
+        super().__init__()
+        self.sprite = pygame.image.load('Assets/CamaleaoDeFogo.png')
+        self.index = 0
+        self.size = (16, 56)
+        self.position = [x, y]
+        self.recharge_time = Configuration.get_config().game_fps * 7
+        self.recharge_counter = 0
+        self.on_fire = False
+
+
+    def update(self, screen, player_board_position):
+        self.frames += 1
+        self.recharge_counter += 1
+        if self.recharge_counter >= self.recharge_time:
+            self.recharge_counter = 0
+            self.on_fire = True
+
+        if self.on_fire:
+            if self.frames % 10 == 0:
+                self.index += 1
+                if self.index > 4:
+                    self.index = 0
+
+        self.draw(screen)
+
+    def draw(self, screen):
+        spr = self.sprite.subsurface(0, self.index * self.size[1], self.size[0], self.size[1])
+        sz = Configuration.get_config().cell_size
+        scale = self.size[1] / 16
+        scale_tupla = (sz[0], sz[1] * scale)
+        spr = pygame.transform.scale(spr, scale_tupla)
         screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
