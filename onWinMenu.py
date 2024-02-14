@@ -61,7 +61,6 @@ class TelaResultado:
         option = 0
         while self.is_running:
             rectangles = self.draw_menu_screen(self.texts_vitoria, self.draw_ex, self.draw_ey, True)
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()

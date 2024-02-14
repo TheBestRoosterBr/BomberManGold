@@ -13,6 +13,7 @@ class Level:
     def alter_stage(self):
         pass
 
+
     def run(self, screen):
         self.alter_stage()
         game = Game(screen, enemies=self.enemies)
@@ -22,6 +23,7 @@ class Level:
             resultado.screen_derrota()
         elif self.game_result == 0:
             resultado.screen_vitoria()
+            Configuration.get_config().level = self.num + 1
         elif self.game_result == 3:
             pass
 
@@ -116,7 +118,7 @@ class Level2World1(Level):
 
 class Level3World1(Level):
     def __init__(self):
-        super().__init__(1)
+        super().__init__(3)
         self.lucky_block_position = (13, 1)
 
     def alter_stage(self):
