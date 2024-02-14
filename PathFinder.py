@@ -45,7 +45,6 @@ def a_star_search(grid, src, dest, blocked=True):
     best_direction = [0, 0]
     # Check if the source and destination are valid
     if not is_valid(src[0], src[1]) or not is_valid(dest[0], dest[1]):
-        print("Alguem ta no lugar errado")
         return best_direction
 
     if blocked:
@@ -56,7 +55,6 @@ def a_star_search(grid, src, dest, blocked=True):
 
     # Check if we are already at the destination
     if is_destination(src[0], src[1], dest):
-        print("PEGOU!")
         return best_direction
 
     # Initialize the closed list (visited cells)
@@ -103,7 +101,7 @@ def a_star_search(grid, src, dest, blocked=True):
                     # Set the parent of the destination cell
                     cell_details[new_i][new_j].parent_i = i
                     cell_details[new_i][new_j].parent_j = j
-                    print("No caminho certo!")
+
                     # Return the direction leading to the destination
                     return dir
                 else:
@@ -125,7 +123,6 @@ def a_star_search(grid, src, dest, blocked=True):
 
     # If the destination is not found after visiting all cells
     if not found_dest:
-        print("Nao achou onde tava o caminho certo, melhor ficar parado!")
         return best_direction
 
 
