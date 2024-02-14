@@ -1,15 +1,14 @@
 import pygame
 import sys
 
+from Configuration import Configuration
+
 
 class Pause:
-    def __init__(self, width, height):
-        pygame.init()
+    def __init__(self):
         self.opcoes = ["Continuar", "Opções", "Voltar"]
-        self.WIDTH = width
-        self.HEIGHT = height
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-
+        self.WIDTH = Configuration.get_config().screen_width
+        self.HEIGHT = Configuration.get_config().screen_height
         # Fontes
         self.font_path = "./Fonts/nougat.ttf"
         self.font = pygame.font.Font(self.font_path, 40)
@@ -51,11 +50,11 @@ class Pause:
             text_rect = text_surface.get_rect(center=(rect.centerx, rect.centery))
             surface.blit(text_surface, text_rect)
 
-    def draw_text_center(self, text, y, color, font_size, font_path):
+    def draw_text_center(self, screen, text, y, color, font_size, font_path):
         font = pygame.font.Font(font_path, font_size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect(center=(self.WIDTH // 2, y))
-        self.screen.blit(text_surface, text_rect)
+        screen.blit(text_surface, text_rect)
 
     def check_button_hover(self, mouse_pos):
         # Verifica se o mouse está sobre algum botão de opção
@@ -67,61 +66,52 @@ class Pause:
         self.selected_option = None
         return False
 
-    def view_paused(self):
-        # Desenhe o background aqui (substitua pelo caminho real do seu arquivo de imagem)
-        background_image = pygame.image.load("./Assets/temp.png")
-        self.screen.blit(background_image, (0, 0))
+    def view_paused(self, screen):
+        is_running = True
+        while is_running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.quit_game()
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if self.selected_option is not None:
+                        is_running = False
+                        break
 
-        # Configurações do retângulo com texto
-        pos_y = (self.HEIGHT // 2) - 130
-        self.draw_rectangle(self.screen, (3, 0, 40), (0, 0, 1280, 720), 0, 0.7, None, None, None, None, None, None,
-                            None, None)
+                if event.type == pygame.MOUSEMOTION:
+                    self.check_button_hover(pygame.mouse.get_pos())
 
-        self.draw_text_center("Paused", pos_y, (255, 255, 255), 50, self.font_path)
-        self.draw_rectangle(self.screen, (255, 255, 255), ((self.WIDTH - 700) / 2, pos_y + 50, 700, 2), 0, 1, None,
-                            None, None, None, None, None, None, None)
+            # Configurações do retângulo com texto
+            pos_y = (self.HEIGHT // 2) - 130
+            self.draw_rectangle(screen, (3, 0, 40), (0, 0, 1280, 720), 0, 0.7, None, None, None, None, None, None,
+                                None, None)
 
-        # Três opções
-        for index, op in enumerate(self.opcoes):
-            rect = pygame.Rect((self.WIDTH - 200) / 2, ((self.HEIGHT // 2) - 130) + 90 + (55 * index), 200, 40)
+            self.draw_text_center(screen, "Paused", pos_y, (255, 255, 255), 50, self.font_path)
+            self.draw_rectangle(screen, (255, 255, 255), ((self.WIDTH - 700) / 2, pos_y + 50, 700, 2), 0, 1, None,
+                                None, None, None, None, None, None, None)
 
-            # Verifica se o mouse está sobre o botão
-            if rect.collidepoint(pygame.mouse.get_pos()):
-                color = self.hovered_color
-                opacidade = 1
-            else:
-                color = self.default_color
-                opacidade = 0.3
+            # Três opções
+            for index, op in enumerate(self.opcoes):
+                rect = pygame.Rect((self.WIDTH - 200) / 2, ((self.HEIGHT // 2) - 130) + 90 + (55 * index), 200, 40)
 
-            self.draw_rectangle(
-                self.screen, color, rect, 3, opacidade, None, None, None, None, op, (255, 255, 255), self.font_path, 25
-            )
+                # Verifica se o mouse está sobre o botão
+                if rect.collidepoint(pygame.mouse.get_pos()):
+                    color = self.hovered_color
+                    opacidade = 1
+                else:
+                    color = self.default_color
+                    opacidade = 0.3
 
-        pygame.display.flip()
+                self.draw_rectangle(
+                    screen, color, rect, 3, opacidade, None, None, None, None, op, (255, 255, 255), self.font_path, 25
+                )
 
-    def quit_game(self):
+            pygame.display.flip()
+
+        return self.selected_option
+
+    @staticmethod
+    def quit_game():
         pygame.quit()
         sys.exit()
 
 
-# Crie uma instância da classe Pause
-pause = Pause(1280, 720)
-
-# Chame o método view_paused para exibir a tela de pausa
-
-
-while True:
-    pause.view_paused()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pause.quit_game()
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if pause.selected_option is not None:
-                if pause.selected_option == 0:
-                    print("botão 1")
-                elif pause.selected_option == 1:
-                    print("botão 2")
-                elif pause.selected_option == 2:
-                    pause.quit_game()
-    if event.type == pygame.MOUSEMOTION:
-        pause.check_button_hover(pygame.mouse.get_pos())

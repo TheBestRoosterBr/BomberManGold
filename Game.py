@@ -2,6 +2,7 @@ import pygame.display
 
 import Configuration
 import Stage
+import pause
 from Enemy import Koopa
 from Player import Player
 import Stage
@@ -20,6 +21,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.enemies = enemies
         self.game_result = 0 # 0 for win, 1 to lose, 2 for draw
+        self.pause = pause.Pause()
 
     def update(self, lucky_block_position=(0, 0)):
         #Simplesmente um if que n serve pra nada. TODO: um timer pra não ficar rápido
@@ -31,6 +33,9 @@ class Game:
                 pygame.quit()
             if not self.player.is_morrendo or self.player.is_invincible:
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.pause.view_paused(self.screen)
+
                     if event.key == pygame.K_j:
                         self.player.put_bomb()
                     elif event.key == pygame.K_k:
