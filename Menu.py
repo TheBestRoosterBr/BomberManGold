@@ -3,7 +3,7 @@ from Game import Game
 from Configuration import Configuration
 from World import World1
 from onWinMenu import TelaResultado
-
+from Options import Options
 
 class ImageButton:
     def __init__(self, x, y, image_path):
@@ -259,16 +259,26 @@ class MenuInicial:
                             if i == 0:
                                 option = 0
                                 self.is_running = False
+                            elif i == 1:
+                                option = 1
+                                self.is_running = False
                             elif i == 2:
                                 pygame.quit()
 
-            pygame.display.flip()
+            pygame.display.update()
 
+        self.go_to_option(option)
+
+    def go_to_option(self, option):
         if option == 0:
             MenuJogar = MenuPlay(self.screen)
             MenuJogar.main_loop()
         elif option == 1:
-            pass # todo: tela de opcoes odeio
+            options = Options()
+            options.main_loop(self.screen)
+
+        self.is_running = True
+        self.main_loop()
 
     def run_game(self):
         game = Game(self.screen)

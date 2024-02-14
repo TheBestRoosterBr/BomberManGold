@@ -19,3 +19,4 @@ class Configuration:
         self.actual_world = 0
         self.level = 0
         self.map_size = (936, 648)
+        self.foto = 0

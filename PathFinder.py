@@ -50,7 +50,7 @@ def a_star_search(grid, src, dest, blocked=True):
 
     if blocked:
         # Check if the source and destination are unblocked
-        if not is_unblocked(grid, src[0], src[1], blocked) or not is_unblocked(grid, dest[0], dest[1]):
+        if not is_unblocked(grid, src[0], src[1], blocked) or not is_unblocked(grid, dest[0], dest[1], blocked):
             print("alguem ta no lugar errado")
             return [1, 0]
 
