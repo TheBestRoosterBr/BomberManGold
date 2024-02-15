@@ -35,7 +35,13 @@ class Player:
         self.morrendo_index = 0
         self.total_morrendo = 6
         self.sound_morrendo = pygame.mixer.Sound('Sounds/on-fire.ogg')
+<<<<<<< Updated upstream
         self.morrendo_sprite = pygame.image.load('Assets/morrendo' + Configuration.get_config().player + '.png')
+=======
+        self.sound_Takeitem = pygame.mixer.Sound('Sounds/Take-item.mp3')
+        self.sound_colocarbomb = pygame.mixer.Sound('Sounds/put_bomb.mp3')
+        self.morrendo_sprite = pygame.image.load('Assets/morrendo.png')
+>>>>>>> Stashed changes
 
         self.invincibility_timer = 0
         self.invincibility_max_timer = 0
@@ -66,7 +72,8 @@ class Player:
 
     @staticmethod
     def check_collision(next_position, board, direction, player):
-        matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], player.position, direction)
+        matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], player.position,
+                                                              direction)
         if board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.BOMBA:
             for bomba in player.bombs:
                 if bomba.position == Stage.screen_pos_to_matrix(player.position[0], player.position[1]):
@@ -83,7 +90,6 @@ class Player:
         if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
             self.move_right(frames, board, check_caveira=False)
             return
-
         if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0), self):
             if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
                 self.position[0] -= 20
@@ -91,7 +97,6 @@ class Player:
                 self.position[0] -= 1
             else:
                 self.position[0] -= self.speed
-
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
@@ -150,6 +155,7 @@ class Player:
             return
 
         if self.check_collision((self.position[0], self.position[1] + self.speed), board, (0, 1), self):
+
             if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
                 self.position[1] += 20
             elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
@@ -178,13 +184,18 @@ class Player:
             self.frame_index[1] = 1
 
     def put_bomb(self):
+
         if self.caveira['enabled'] and self.caveira['type'] == 'disable_bombs':
             return
 
         if self.active_bombs < self.max_bombs:
+            self.sound_colocarbomb.play()
+            self.sound_colocarbomb.set_volume(Configuration.get_config().volume)
             position = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
-            if Stage.stage.board[position[0]][position[1]] != BlockStatus.BOMBA and Stage.stage.board[position[0]][position[1]] != BlockStatus.PORTAL_ABERTO\
-                    and Stage.stage.board[position[0]][position[1]] != BlockStatus.PORTAL_FECHADO and Stage.stage.board[position[0]][position[1]] != BlockStatus.LUCKY_BLOCK:
+            if Stage.stage.board[position[0]][position[1]] != BlockStatus.BOMBA and Stage.stage.board[position[0]][
+                position[1]] != BlockStatus.PORTAL_ABERTO \
+                    and Stage.stage.board[position[0]][position[1]] != BlockStatus.PORTAL_FECHADO and \
+                    Stage.stage.board[position[0]][position[1]] != BlockStatus.LUCKY_BLOCK:
                 bomb = Bomba(self.bomb_power, position[0], position[1], self.bomb_type)
                 self.bombs.append(bomb)
                 Stage.stage.bombas.append(bomb)
@@ -193,12 +204,15 @@ class Player:
     def pegar_colete(self):
         self.timer_colete += 15 * Configuration.get_config().game_fps
         self.is_invincible = True
+        self.sound_Takeitem.play()
+        self.sound_Takeitem.set_volume(Configuration.get_config().volume)
 
     def morrer(self):
         if not self.is_invincible:
             self.is_morrendo = True
             self.is_invincible = True
             self.sound_morrendo.play()
+            self.sound_morrendo.set_volume(Configuration.get_config().volume)
 
     def update(self, screen, frames):
         if self.isAlive and self.caveira['enabled'] and self.caveira['type'] == 'place_bombs':
@@ -251,7 +265,6 @@ class Player:
                         elif board[bomb_i - i][bomb_j] == BlockStatus.WALL:
                             break
 
-
                     for i in range(1, bomb.power):
                         if board[bomb_i][bomb_j + i] == BlockStatus.FIRE:
                             board[bomb_i][bomb_j + i] = BlockStatus.CLEAR
@@ -263,7 +276,6 @@ class Player:
                             board[bomb_i][bomb_j - i] = BlockStatus.CLEAR
                         elif board[bomb_i][bomb_j - i] == BlockStatus.WALL:
                             break
-
 
                     Stage.stage.bombas.remove(bomb)
                     self.bombs.remove(bomb)
