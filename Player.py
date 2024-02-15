@@ -12,7 +12,6 @@ from Configuration import Configuration
 class Player:
     def __init__(self, x, y):
         self.score = 0
-        self.lives = 1
         self.Name = "BomberManFodase"
         pos = Stage.matrix_to_screen_pos(x, y)
         self.position = [pos[0], pos[1]]

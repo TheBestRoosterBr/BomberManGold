@@ -393,7 +393,7 @@ class Herobrine(Enemy):
         self.player.name = "Herobrine"
         self.player.sprite = pygame.image.load("Assets/herobrine.png")
         self.player.morrendo_sprite = pygame.image.load('Assets/morrendo.png')
-        self.player.lives = 10
+        self.player.vidas = 10
         self.heart = pygame.image.load("Assets/heart.png")
         self.player.speed = 3
         self.player.bomb_power = 10
@@ -401,7 +401,7 @@ class Herobrine(Enemy):
         self.position = [12, 12]
 
     def draw_life_bar(self, screen):
-        for i in range(self.player.lives):
+        for i in range(self.player.vidas):
             p_pos = Stage.matrix_to_screen_pos(self.player.position[0], self.player.position[1])
             pos = (self.heart.get_width() * i) + 10 + p_pos[0], p_pos[1] - self.heart.get_height() * 2
             screen.blit(self.heart, pos)
