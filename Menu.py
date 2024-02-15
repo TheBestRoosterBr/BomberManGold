@@ -153,7 +153,7 @@ class MenuPlay:
 class MenuInicial:
     def __init__(self, screen):
         pygame.mixer.music.load("Sounds/Menuinicial.mp3")
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(0.2)
         pygame.mixer.music.play(-1)
         config = Configuration.get_config()
         self.width = config.screen_width
