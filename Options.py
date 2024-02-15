@@ -141,7 +141,14 @@ class Controle:
 
         self.font_path = "./Fonts/nougat.ttf"
         self.font = pygame.font.Font(self.font_path, 40)
-        self.foto_pos = [360, 360]
+
+        size = (300, 200)
+        pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
+        pos_y = Configuration.get_config().screen_height / 2 - size[1]
+        self.rect = pygame.Rect(pos_x, pos_y, size[0], size[1])
+        self.image = pygame.image.load('Assets/teclas.png')
+
+        self.scaled_image = pygame.transform.scale(self.image, (self.rect.size[0] - 20, self.rect.size[1] - 20))
 
         self.Confirmar = ImageButton(944, 540, 64, 16, "Assets/Button.png", (256, 64))
         self.Voltar = ImageButton(404, 540, 64, 16, "Assets/Button.png", (256, 64))
@@ -186,6 +193,8 @@ class Controle:
 
         self.Voltar.draw(screen)
         self.Confirmar.draw(screen)
+        pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect, border_radius=10)
+        screen.blit(self.scaled_image, (self.rect.x + 10, self.rect.y))
         self.draw_text(screen, "Confirmar", self.Confirmar.rect, self.default_color)
         self.draw_text(screen, "Voltar", self.Voltar.rect, self.default_color)
 
@@ -280,10 +289,10 @@ class Audio:
                      Configuration.get_config().audio = not Configuration.get_config().audio
                      self.save_volume(Configuration.get_config().volume)
 
-        pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect)
+        pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect, border_radius=10)
         self.button.draw(screen)
-        pygame.draw.rect(screen, color=(100, 100, 100), rect=self.bar)
-        pygame.draw.rect(screen, color=(0, 0, 90), rect=self.volume_bar)
+        pygame.draw.rect(screen, color=(100, 100, 100), rect=self.bar, border_radius=2)
+        pygame.draw.rect(screen, color=(0, 0, 90), rect=self.volume_bar, border_radius=2)
         pygame.draw.circle(screen, (0, 0, 90), self.posicao_bolinha, self.radius_bolinha)
         self.Voltar.draw(screen)
         self.Confirmar.draw(screen)

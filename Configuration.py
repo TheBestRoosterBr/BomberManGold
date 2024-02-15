@@ -41,8 +41,6 @@ class Configuration:
                     self.volume = float(prop[1])
                 if prop[0] == 'sound_enable':
                     self.audio = prop[1] == True
-
-
                 linha = arquivo.readline()
 
 
