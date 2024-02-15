@@ -125,19 +125,14 @@ class MenuPlay:
                     for i in range(len(rectangles)):
                         if self.is_hovered(rectangles[i]):
                             if i == 0:
-                                option = 0
-                                self.is_running = False
+                                world = World1(self.screen)
+                                world.main_loop()
                             elif i == 2:
                                 option = 2
                                 self.is_running = False
 
             pygame.display.flip()
 
-        if option == 0:
-            world = World1(self.screen)
-            world.main_loop()
-        elif option == 2:
-            pass
 
     def run_game(self):
         game = Game(self.screen)

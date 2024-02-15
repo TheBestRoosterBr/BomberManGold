@@ -1,6 +1,7 @@
 import pygame.image
 
 import Level
+import TheEnd
 from Configuration import Configuration
 
 
@@ -108,8 +109,12 @@ class World1:
         result = self.levels[self.selected_level - 1].run(self.screen)
         if result:
             self.selected_level += 1
-            self.selected_level = self.selected_level % len(self.levels)
-            self.run_level()
+            if self.selected_level == len(self.levels) + 1:
+                cr = TheEnd.Fim()
+                cr.display_credits()
+                self.selected_level = 0
+            else:
+                self.run_level()
 
 
     def main_loop(self):

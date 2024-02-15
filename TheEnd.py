@@ -5,7 +5,7 @@ from Configuration import Configuration
 
 
 class Fim:
-    def __init__(self, width, height):
+    def __init__(self):
         pygame.init()
         self.WIDTH = Configuration.get_config().screen_width
         self.HEIGHT = Configuration.get_config().screen_height
@@ -34,7 +34,7 @@ class Fim:
         running = True
         while running:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                     running = False
 
             self.screen.blit(self.background_image, (0, 0))  # Desenha o fundo
@@ -51,20 +51,3 @@ class Fim:
             pygame.display.flip()
             clock.tick(60)  # 60 FPS
 
-        pygame.quit()
-        sys.exit()
-
-# Certifique-se de ter instalado o Pygame usando: pip install pygame
-
-# Tente iniciar o Pygame antes de criar a instância da classe Credits
-try:
-    pygame.init()
-except pygame.error:
-    print("Erro ao iniciar o Pygame. Verifique a instalação.")
-    sys.exit()
-
-# Crie uma instância da classe Credits
-credits = Fim(1280, 720)
-
-# Chame o método display_credits para exibir os créditos com animação
-credits.display_credits()
