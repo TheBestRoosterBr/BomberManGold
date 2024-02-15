@@ -58,7 +58,7 @@ def a_star_search(grid, src, dest, blocked=True):
 
     # Check if we are already at the destination
     if is_destination(src[0], src[1], dest):
-        return best_direction
+        return [0, 0]
 
     # Initialize the closed list (visited cells)
     closed_list = [[False for _ in range(COL)] for _ in range(ROW)]
