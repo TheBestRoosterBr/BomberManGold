@@ -4,6 +4,7 @@ from BlockStatus import BlockStatus
 from Configuration import Configuration
 import PathFinder
 import Stage
+from Player import Player
 from SangueAnimation import SangueAnimation
 
 
@@ -225,7 +226,6 @@ class MuxeguSpawner(Enemy):
         self.draw(screen)
 
     def draw(self, screen):
-
         spr = pygame.transform.scale(self.sprite, Configuration.get_config().cell_size)
         screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
 
@@ -386,17 +386,44 @@ class Camaleao(Enemy):
         screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
 
 
-class SthingCamaleon(Enemy):
+class Herobrine(Enemy):
     def __init__(self):
         super().__init__()
-        self.sprite = pygame.image.load("Assets/boss_mega_men.png")
-        self.sprite_index = 0
+        self.player = Player(12, 12)
+        self.player.sprite = pygame.image.load("Assets/herobrine.png")
+        self.player.lives = 10
+        self.heart = pygame.image.load("Assets/heart.png")
+        self.player.speed = 3
+        self.player.bomb_power = 10
+        self.bomb_counter = 0
+        self.position = [12, 12]
+
+    def draw_life_bar(self, screen):
+        for i in range(self.player.lives):
+            p_pos = Stage.matrix_to_screen_pos(self.player.position[0], self.player.position[1])
+            pos = (self.heart.get_width() * i) + 10 + p_pos[0], p_pos[1] - self.heart.get_height() * 2
+            screen.blit(self.heart, pos)
 
     def attack(self):
-        pass
+        self.bomb_counter += 1
+        if self.bomb_counter > 60:
+            self.player.put_bomb()
+            self.bomb_counter = 0
 
     def update(self, screen, player_board_position):
-        pass
+        self.frames += 1
+        self.position = self.player.position
+        new_position = PathFinder.path_finder(player_board_position, self.player.position)
+        if new_position == (0, 1):
+            self.player.move_down(self.frames, Stage.stage.board, False)
+        if new_position == (0, -1):
+            self.player.move_up(self.frames, Stage.stage.board, False)
+        if new_position == (1, 0):
+            self.player.move_right(self.frames, Stage.stage.board, False)
+        if new_position == (-1, 0):
+            self.player.move_left(self.frames, Stage.stage.board, False)
+        self.attack()
+        self.player.update(screen, self.frames)
+        self.draw_life_bar(screen)
 
-    def draw(self, screen):
-        pass
+

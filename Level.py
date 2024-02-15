@@ -4,6 +4,7 @@ from Enemy import *
 from Game import Game
 from onWinMenu import TelaResultado
 
+
 class Level:
     def __init__(self, num):
         self.enemies = []
@@ -89,6 +90,7 @@ class Level1World1(Level):
         pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
 
+
 class Level2World1(Level):
     def __init__(self):
         super().__init__(2)
@@ -129,7 +131,6 @@ class Level2World1(Level):
         pygame.mixer.music.load("Sounds/LevelTwon.mp3")
         pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
-
 
 
 class Level3World1(Level):
@@ -179,8 +180,43 @@ class Level3World1(Level):
         self.enemies.append(camaleao2)
         self.enemies.append(harem)
         pygame.mixer.music.load("Sounds/LevelTree.mp3")
-        pygame.mixer.music.set_volume(0.1)
+        pygame.mixer.music.set_volume(Configuration.get_config().volume)
         pygame.mixer.music.play(-1)
 
 
+class Level4World1(Level):
+    def __init__(self):
+        super().__init__(4)
+        self.lucky_block_position = (13, 16)
 
+    def alter_stage(self):
+        Stage.stage.sprite_parede = pygame.transform.scale(pygame.image.load("Assets/block_level_4.png"),
+                                                           Configuration.get_config().cell_size)
+        Stage.stage.sprite_parede_destrutiva = pygame.transform.scale(
+            pygame.image.load("Assets/caixote_level_4.png"), Configuration.get_config().cell_size)
+
+        Stage.stage.board = [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 17, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+
+        Stage.stage.board[self.lucky_block_position[0]][self.lucky_block_position[1]] = BlockStatus.LUCKY_BLOCK
+        pygame.mixer.music.load("Sounds/LevelOne.mp3")
+        pygame.mixer.music.set_volume(Configuration.get_config().volume)
+        pygame.mixer.music.play(-1)
+
+        herobrine = Herobrine()
+        self.enemies.append(herobrine)
