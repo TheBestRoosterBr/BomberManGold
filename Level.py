@@ -13,7 +13,6 @@ class Level:
     def alter_stage(self):
         pass
 
-
     def run(self, screen):
         self.alter_stage()
         game = Game(screen, enemies=self.enemies)

@@ -2,10 +2,12 @@ import pygame.display
 
 import Configuration
 import Enemy
+import Options
 import Stage
 import pause
 from Enemy import Koopa
 from Options import Options
+from Options import ImageButton
 from Player import Player
 import Stage
 
@@ -24,16 +26,31 @@ class Game:
         self.enemies = enemies
         self.game_result = 0 # 0 for win, 1 to lose, 2 for draw, 3 for resign
         self.pause = pause.Pause()
+        self.lateral = pygame.image.load("Assets/back_lateral.png")
+        sz_pause = 64
+        self.pause_button = ImageButton(self.config.screen_width - self.lateral.get_width() + sz_pause, sz_pause,
+                                                sz_pause, sz_pause, "Assets/pause.png")
+
 
     def update(self, lucky_block_position=(0, 0)):
 
         self.frames += 1
-
+        pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.is_running = False
                 pygame.quit()
             if not self.player.is_morrendo or self.player.is_invincible:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.pause_button.is_clicked(pos):
+                        op = self.pause.view_paused(self.screen)
+                        if op == 1:
+                            options = Options()
+                            options.main_loop(self.screen)
+                        elif op == 2:
+                            self.is_running = False
+                            self.game_result = 3
+                            break
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         op = self.pause.view_paused(self.screen)
@@ -102,6 +119,8 @@ class Game:
 
     def draw(self, lucky_block_position=(0, 0)):
         self.screen.fill((0, 0, 0))
+        self.screen.blit(self.lateral, (0, 0))
+        self.screen.blit(self.lateral, (self.config.screen_width - self.lateral.get_width(), 0))
         self.stage.draw(self.screen, lucky_block_position)
         result = self.player.update(self.screen, self.frames)
         if result == 1:
@@ -111,6 +130,8 @@ class Game:
         pos = self.player.position
         for i in range(len(self.enemies)):
             self.enemies[i].update(self.screen, Stage.screen_pos_to_matrix(pos[0], pos[1]))
+        self.pause_button.is_clicked(pos)
+        self.pause_button.draw(self.screen)
         pygame.display.update()
         self.clock.tick(self.config.game_fps)
 

@@ -9,7 +9,7 @@ from PowerUp import PowerUp
 def create_clear_board():
     ROW = 19
     COL = 15
-    # Create an empty board filled with clear blocks
+    # Criar um tabuleiro sem obstaculos
     board = [[0 for _ in range(COL)] for _ in range(ROW)]
     return board
 

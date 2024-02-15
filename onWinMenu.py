@@ -14,7 +14,6 @@ class TelaResultado:
         derrota_background = pygame.image.load("./Assets/perdeu.jpg")
         self.background_derrota = pygame.transform.scale(derrota_background, (self.width, self.height))
 
-
         # Cores
         self.white = (255, 255, 255)
         self.yellow = (255, 255, 0)
