@@ -28,9 +28,11 @@ class World1:
         level1 = Level.Level1World1()
         level2 = Level.Level2World1()
         level3 = Level.Level3World1()
+        level4 = Level.Level4World1()
         self.levels.append(level1)
         self.levels.append(level2)
         self.levels.append(level3)
+        self.levels.append(level4)
         return len(self.levels)
 
     def positioned(self, index):
