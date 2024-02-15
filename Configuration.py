@@ -39,10 +39,9 @@ class Configuration:
                     self.player = prop[1]
                 if prop[0] == 'volume':
                     self.volume = float(prop[1])
-                    if self.volume <= 0.05:
-                        self.audio = False
-                    else:
-                        self.audio = True
+                if prop[0] == 'sound_enable':
+                    self.audio = prop[1] == True
+
 
                 linha = arquivo.readline()
 
@@ -51,3 +50,4 @@ class Configuration:
         with open('player_data.properties', 'w') as f:
             f.write('color=' + self.player + '\n')
             f.write('volume=' + str(self.volume) + '\n')
+            f.write('sound_enable='+ str(self.audio) + '\n')

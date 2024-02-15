@@ -194,17 +194,15 @@ class Controle:
 
 class Audio:
     def __init__(self):
-        self.enabled = Configuration.get_config().audio
+
         self.spr_path = {
             True: 'speaker',
             False: 'mute'
         }
-        size = (300, 200)
+        size = (300, 100)
         pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
-        pos_y = Configuration.get_config().screen_height / 2 - size[1] / 2
+        pos_y = Configuration.get_config().screen_height / 2 - size[1]
         self.rect = pygame.Rect(pos_x, pos_y, size[0], size[1])
-
-        self.button = ImageButton(pos_x + 20, pos_y + 100 - 20 + 2, 40, 40, 'Assets/' + self.spr_path[self.enabled] + '.png')
         self.font_path = "./Fonts/nougat.ttf"
         self.font = pygame.font.Font(self.font_path, 40)
 
@@ -216,14 +214,6 @@ class Audio:
         self.default_color = (255, 255, 255)
         self.hovered_color = (0, 120, 255)
 
-    @staticmethod
-    def circle_point_collision(cx, cy, r, px, py):
-        # Calculate the distance between the circle's center and the point
-        distance = ((px - cx) ** 2 + (py - cy) ** 2) ** 0.5
-
-        # Check if the distance is less than or equal to the circle's radius
-        return distance <= r
-
 
     def save_volume(self, volume):
         Configuration.get_config().volume = volume
@@ -231,19 +221,14 @@ class Audio:
         self.load_volume()
 
     def load_volume(self):
-        size = (300, 200)
+        size = (300, 100)
         pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
-        pos_y = Configuration.get_config().screen_height / 2 - size[1] / 2
+        pos_y = Configuration.get_config().screen_height / 2 - size[1] * 1.5
 
         self.bar = pygame.Rect(pos_x + 70, pos_y + 100, 200, 4)
         self.volume_bar = pygame.Rect(pos_x + 70, pos_y + 100, 200 * Configuration.get_config().volume, 4)
         self.radius_bolinha = 8
         self.posicao_bolinha = (self.volume_bar.x + self.volume_bar.width, self.volume_bar.y + self.radius_bolinha - self.volume_bar.height - 2)
-
-        if Configuration.get_config().volume <= 0.05:
-            Configuration.get_config().audio = False
-        else:
-            Configuration.get_config().audio = True
 
         self.button = ImageButton(pos_x + 20, pos_y + 100 - 20 + 2, 40, 40,
                                   'Assets/' + self.spr_path[Configuration.get_config().audio] + '.png')
@@ -265,6 +250,7 @@ class Audio:
         perfil_clicked = option.perfil_button.is_clicked(pos)
         audio_clicked = option.audio_button.is_clicked(pos)
         controle_clicked = option.control_button.is_clicked(pos)
+        button_clicked = self.button.is_clicked(pos)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -285,8 +271,15 @@ class Audio:
                     option.controller = Controller.CONTROLES
                 elif self.bar.collidepoint(*pos):
                     new_volume = (pos[0] - self.bar.x) / 200
+                    if new_volume > 0.05:
+                        Configuration.get_config().audio = True
+                    else:
+                        Configuration.get_config().audio = False
                     self.save_volume(new_volume)
-                    pass
+                elif button_clicked:
+                     Configuration.get_config().audio = not Configuration.get_config().audio
+                     self.save_volume(Configuration.get_config().volume)
+
         pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect)
         self.button.draw(screen)
         pygame.draw.rect(screen, color=(100, 100, 100), rect=self.bar)
