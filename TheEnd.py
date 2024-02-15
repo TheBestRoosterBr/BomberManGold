@@ -10,8 +10,8 @@ class Fim:
         pygame.display.set_caption("Créditos")
 
         # Fonte
-        self.font_path = "./Fonts/nougat.ttf"
-        self.font = pygame.font.Font(self.font_path, 30)
+        self.font_path = "Fonts/nougat.ttf"
+        self.font = pygame.font.Font(self.font_path, 25)
 
         # Carregar créditos do arquivo
         self.load_credits()
@@ -22,6 +22,7 @@ class Fim:
     def load_credits(self):
         with open("./Fonts/agradecimentos.txt", "r", encoding="utf-8") as file:
             self.credits_text = file.readlines()
+
 
     def display_credits(self):
         clock = pygame.time.Clock()
@@ -34,15 +35,15 @@ class Fim:
                     running = False
 
             self.screen.blit(self.background_image, (0, 0))  # Desenha o fundo
+            y_position -= 1  # Ajuste a velocidade de subida alterando este valor
 
-            for line in self.credits_text:
-                text_surface = self.font.render(line.strip(), True, (255, 255, 255))
-                text_rect = text_surface.get_rect(center=(self.WIDTH // 2, y_position))
+            for i in range(len(self.credits_text)):
+                text_surface = self.font.render(self.credits_text[i].strip(), True, (255, 0, 0))
+                text_rect = text_surface.get_rect(center=(self.WIDTH // 2, y_position + i * 20))
                 self.screen.blit(text_surface, text_rect)
-                y_position += 2  # Ajuste a velocidade de subida alterando este valor
 
-                if y_position > self.HEIGHT:  # Reinicia no topo quando atinge a parte superior
-                    y_position = 0
+                if y_position < -len(self.credits_text) * 20:  # Reinicia no topo quando atinge a parte superior
+                    y_position = self.HEIGHT
 
             pygame.display.flip()
             clock.tick(60)  # 60 FPS
