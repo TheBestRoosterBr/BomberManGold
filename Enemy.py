@@ -390,6 +390,7 @@ class Herobrine(Enemy):
     def __init__(self):
         super().__init__()
         self.player = Player(12, 12)
+        self.player.name = "Herobrine"
         self.player.sprite = pygame.image.load("Assets/herobrine.png")
         self.player.lives = 10
         self.heart = pygame.image.load("Assets/heart.png")
