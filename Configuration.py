@@ -1,4 +1,3 @@
-
 class Configuration:
     __instance = None
 
@@ -41,11 +40,13 @@ class Configuration:
                     self.volume = float(prop[1])
                 if prop[0] == 'sound_enable':
                     self.audio = prop[1] == True
+                if prop[0] == 'level':
+                    self.level = int(prop[1])
                 linha = arquivo.readline()
-
 
     def save_in_file(self):
         with open('player_data.properties', 'w') as f:
             f.write('color=' + self.player + '\n')
             f.write('volume=' + str(self.volume) + '\n')
-            f.write('sound_enable='+ str(self.audio) + '\n')
+            f.write('sound_enable=' + str(self.audio) + '\n')
+            f.write('level=' + str(self.level) + '\n')

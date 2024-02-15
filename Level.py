@@ -14,17 +14,26 @@ class Level:
         pass
 
     def run(self, screen):
+        self.enemies.clear()
         self.alter_stage()
         game = Game(screen, enemies=self.enemies)
         self.game_result = game.run(self.lucky_block_position)
         resultado = TelaResultado(screen)
         if self.game_result == 1:
-            resultado.screen_derrota()
+            result = resultado.screen_derrota()
+            if result:
+                self.run(screen)
+                return
+            else:
+                return False
         elif self.game_result == 0:
             resultado.screen_vitoria()
             Configuration.get_config().level = self.num + 1
+            Configuration.get_config().save_in_file()
+            return True
         elif self.game_result == 3:
             pass
+        return False
 
 
 class Level1World1(Level):
@@ -33,6 +42,7 @@ class Level1World1(Level):
         self.lucky_block_position = (13, 16)
 
     def alter_stage(self):
+        Stage.stage = Stage.Stage()
         Stage.stage.sprite_parede = pygame.transform.scale(pygame.image.load("Assets/marioBlock.png"),
                                                            Configuration.get_config().cell_size)
         Stage.stage.sprite_parede_destrutiva = pygame.transform.scale(
@@ -85,6 +95,7 @@ class Level2World1(Level):
         self.lucky_block_position = (13, 8)
 
     def alter_stage(self):
+        Stage.stage = Stage.Stage()
         Stage.stage.sprite_parede = pygame.transform.scale(pygame.image.load("Assets/block_level_2.png"),
                                                            Configuration.get_config().cell_size)
         Stage.stage.sprite_parede_destrutiva = pygame.transform.scale(
@@ -127,6 +138,7 @@ class Level3World1(Level):
         self.lucky_block_position = (13, 1)
 
     def alter_stage(self):
+        Stage.stage = Stage.Stage()
         Stage.stage.sprite_parede = pygame.transform.scale(pygame.image.load("Assets/block_level_3.png"),
                                                            Configuration.get_config().cell_size)
         Stage.stage.sprite_parede_destrutiva = pygame.transform.scale(

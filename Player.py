@@ -25,8 +25,8 @@ class Player:
         self.speed = 2
         self.max_bombs = 1
         self.active_bombs = 0
-        self.bomb_power = 5
-        self.bomb_type = 'espinho'
+        self.bomb_power = 3
+        self.bomb_type = 'normal'
         self.bombs = []
         self.isAlive = True
         self.vidas = 0
