@@ -20,4 +20,32 @@ class Configuration:
         self.level = 1
         self.map_size = (936, 648)
         self.foto = 0
-        self.volume = 1.0
+        self.volume = 0.2
+        self.audio = True
+        self.player = ''
+        self.load_from_file()
+
+    def load_from_file(self):
+        with open('player_data.properties', 'r') as arquivo:
+            linha = arquivo.readline()
+
+            while linha != "":
+
+                prop = linha.split('=')
+                if len(prop) <= 1:
+                    break
+                prop[1] = prop[1].replace('\n', '')
+                if prop[0] == 'color':
+                    self.player = prop[1]
+                if prop[0] == 'volume':
+                    self.volume = float(prop[1])
+                if prop[0] == 'sound_enable':
+                    self.audio = prop[1] == True
+                linha = arquivo.readline()
+
+
+    def save_in_file(self):
+        with open('player_data.properties', 'w') as f:
+            f.write('color=' + self.player + '\n')
+            f.write('volume=' + str(self.volume) + '\n')
+            f.write('sound_enable='+ str(self.audio) + '\n')

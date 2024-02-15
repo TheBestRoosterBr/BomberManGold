@@ -3,13 +3,13 @@ from enum import IntEnum
 
 from pygame import mouse
 
+from Configuration import Configuration
+
 
 class Controller(IntEnum):
     PERFIL = 0
     AUDIO = 1
     CONTROLES = 2
-    TELA = 3
-
 
 class ImageButton:
     def __init__(self, x, y, wid, hei, image_path, scale=None):
@@ -54,6 +54,7 @@ class Perfil:
         # Cores padrão
         self.default_color = (255, 255, 255)
         self.hovered_color = (0, 120, 255)
+        self.load()
 
     def draw_text(self, screen, text, rect, color):
         text_surface = self.font.render(text, True, color)
@@ -63,9 +64,24 @@ class Perfil:
         screen.blit(text_surface, text_rect)
 
     def save(self):
-        pass # todo: metodo pra armazenar as informacoes do usuario
+        players = ['', 'Preto', 'Vermelho', 'Azul']
+        Configuration.get_config().player = players[self.index_foto]
+        Configuration.get_config().save_in_file()
 
-    def update(self, screen):
+
+    def load(self):
+        players = ['', 'Preto', 'Vermelho', 'Azul']
+        self.index_foto = players.index(Configuration.get_config().player)
+
+
+    def update(self, screen, option):
+
+        pos = mouse.get_pos()
+
+        perfil_clicked = option.perfil_button.is_clicked(pos)
+        audio_clicked = option.audio_button.is_clicked(pos)
+        controle_clicked = option.control_button.is_clicked(pos)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -73,20 +89,25 @@ class Perfil:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
                 if self.button1.is_clicked(pos):
                     self.index_foto -= 1
                     if self.index_foto < 0:
-                        self.index_foto = 4
+                        self.index_foto = 3
                 elif self.button2.is_clicked(pos):
                     self.index_foto += 1
-                    if self.index_foto > 4:
+                    if self.index_foto > 3:
                         self.index_foto = 0
                 elif self.Confirmar.is_clicked(pos):
                     self.save()
                     return False
                 elif self.Voltar.is_clicked(pos):
                     return False
+                elif perfil_clicked:
+                    option.controller = Controller.PERFIL
+                elif audio_clicked:
+                    option.controller = Controller.AUDIO
+                elif controle_clicked:
+                    option.controller = Controller.CONTROLES
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -115,6 +136,173 @@ class Perfil:
         return True
 
 
+class Controle:
+    def __init__(self):
+
+        self.font_path = "./Fonts/nougat.ttf"
+        self.font = pygame.font.Font(self.font_path, 40)
+
+        size = (300, 200)
+        pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
+        pos_y = Configuration.get_config().screen_height / 2 - size[1]
+        self.rect = pygame.Rect(pos_x, pos_y, size[0], size[1])
+        self.image = pygame.image.load('Assets/teclas.png')
+
+        self.scaled_image = pygame.transform.scale(self.image, (self.rect.size[0] - 20, self.rect.size[1] - 20))
+
+        self.Confirmar = ImageButton(944, 540, 64, 16, "Assets/Button.png", (256, 64))
+        self.Voltar = ImageButton(404, 540, 64, 16, "Assets/Button.png", (256, 64))
+        # Cores padrão
+        self.default_color = (255, 255, 255)
+        self.hovered_color = (0, 120, 255)
+
+    def draw_text(self, screen, text, rect, color):
+        text_surface = self.font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.x = rect.x + (rect.width / 2) - text_rect.width / 2
+        text_rect.y = rect.y + (rect.height / 2) - text_rect.height / 2
+        screen.blit(text_surface, text_rect)
+
+    def update(self, screen, option):
+        pos = pygame.mouse.get_pos()
+
+        confirmar = self.Confirmar.is_clicked(pos)
+        voltar = self.Voltar.is_clicked(pos)
+
+        perfil_clicked = option.perfil_button.is_clicked(pos)
+        audio_clicked = option.audio_button.is_clicked(pos)
+        controle_clicked = option.control_button.is_clicked(pos)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if confirmar:
+                    return False
+                elif voltar:
+                    return False
+                elif perfil_clicked:
+                    option.controller = Controller.PERFIL
+                elif audio_clicked:
+                    option.controller = Controller.AUDIO
+                elif controle_clicked:
+                    option.controller = Controller.CONTROLES
+
+        self.Voltar.draw(screen)
+        self.Confirmar.draw(screen)
+        pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect, border_radius=10)
+        screen.blit(self.scaled_image, (self.rect.x + 10, self.rect.y))
+        self.draw_text(screen, "Confirmar", self.Confirmar.rect, self.default_color)
+        self.draw_text(screen, "Voltar", self.Voltar.rect, self.default_color)
+
+        return True
+
+
+class Audio:
+    def __init__(self):
+
+        self.spr_path = {
+            True: 'speaker',
+            False: 'mute'
+        }
+        size = (300, 100)
+        pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
+        pos_y = Configuration.get_config().screen_height / 2 - size[1]
+        self.rect = pygame.Rect(pos_x, pos_y, size[0], size[1])
+        self.font_path = "./Fonts/nougat.ttf"
+        self.font = pygame.font.Font(self.font_path, 40)
+
+        self.load_volume()
+
+        self.Confirmar = ImageButton(944, 540, 64, 16, "Assets/Button.png", (256, 64))
+        self.Voltar = ImageButton(404, 540, 64, 16, "Assets/Button.png", (256, 64))
+        # Cores padrão
+        self.default_color = (255, 255, 255)
+        self.hovered_color = (0, 120, 255)
+
+
+    def save_volume(self, volume):
+        Configuration.get_config().volume = volume
+        Configuration.get_config().save_in_file()
+        self.load_volume()
+
+    def load_volume(self):
+        size = (300, 100)
+        pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
+        pos_y = Configuration.get_config().screen_height / 2 - size[1] * 1.5
+
+        self.bar = pygame.Rect(pos_x + 70, pos_y + 100, 200, 4)
+        self.volume_bar = pygame.Rect(pos_x + 70, pos_y + 100, 200 * Configuration.get_config().volume, 4)
+        self.radius_bolinha = 8
+        self.posicao_bolinha = (self.volume_bar.x + self.volume_bar.width, self.volume_bar.y + self.radius_bolinha - self.volume_bar.height - 2)
+
+        self.button = ImageButton(pos_x + 20, pos_y + 100 - 20 + 2, 40, 40,
+                                  'Assets/' + self.spr_path[Configuration.get_config().audio] + '.png')
+
+
+    def draw_text(self, screen, text, rect, color):
+        text_surface = self.font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.x = rect.x + (rect.width / 2) - text_rect.width / 2
+        text_rect.y = rect.y + (rect.height / 2) - text_rect.height / 2
+        screen.blit(text_surface, text_rect)
+
+    def update(self, screen, option):
+        pos = pygame.mouse.get_pos()
+
+        confirmar = self.Confirmar.is_clicked(pos)
+        voltar = self.Voltar.is_clicked(pos)
+
+        perfil_clicked = option.perfil_button.is_clicked(pos)
+        audio_clicked = option.audio_button.is_clicked(pos)
+        controle_clicked = option.control_button.is_clicked(pos)
+        button_clicked = self.button.is_clicked(pos)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if confirmar:
+                    return False
+                elif voltar:
+                    return False
+                elif perfil_clicked:
+                    option.controller = Controller.PERFIL
+                elif audio_clicked:
+                    option.controller = Controller.AUDIO
+                elif controle_clicked:
+                    option.controller = Controller.CONTROLES
+                elif self.bar.collidepoint(*pos):
+                    new_volume = (pos[0] - self.bar.x) / 200
+                    if new_volume > 0.05:
+                        Configuration.get_config().audio = True
+                    else:
+                        Configuration.get_config().audio = False
+                    self.save_volume(new_volume)
+                elif button_clicked:
+                     Configuration.get_config().audio = not Configuration.get_config().audio
+                     self.save_volume(Configuration.get_config().volume)
+
+        pygame.draw.rect(screen, color=(125, 125, 125), rect=self.rect, border_radius=10)
+        self.button.draw(screen)
+        pygame.draw.rect(screen, color=(100, 100, 100), rect=self.bar, border_radius=2)
+        pygame.draw.rect(screen, color=(0, 0, 90), rect=self.volume_bar, border_radius=2)
+        pygame.draw.circle(screen, (0, 0, 90), self.posicao_bolinha, self.radius_bolinha)
+        self.Voltar.draw(screen)
+        self.Confirmar.draw(screen)
+
+        self.draw_text(screen, "Confirmar", self.Confirmar.rect, self.default_color)
+        self.draw_text(screen, "Voltar", self.Voltar.rect, self.default_color)
+
+        return True
+
+
 class Options:
     def __init__(self):
         self.name = ""
@@ -124,6 +312,8 @@ class Options:
         self.font = pygame.font.Font(self.font_path, 40)
         self.is_running = True
         self.perfil = Perfil()
+        self.audio = Audio()
+        self.controle = Controle()
         self.controller_pos = (41, 26)
         self.rectangle_controller = pygame.Rect(self.controller_pos[0], self.controller_pos[1], 280, 650)
         # Cores padrão
@@ -137,8 +327,6 @@ class Options:
                                         32, 16, "Assets/button_small.png", (200, 64))
         self.control_button = ImageButton(self.pos_control_but[0], self.pos_control_but[1] + self.space_buttons * 2,
                                         32, 16, "Assets/button_small.png", (200, 64))
-        self.tela_button = ImageButton(self.pos_control_but[0], self.pos_control_but[1] + self.space_buttons * 3,
-                                          32, 16, "Assets/button_small.png", (200, 64))
 
     def draw_text(self, screen, text, rect, color):
         text_surface = self.font.render(text, True, color)
@@ -148,26 +336,31 @@ class Options:
         screen.blit(text_surface, text_rect)
 
     def main_loop(self, screen):
+
         while self.is_running:
             screen.blit(self.spr, (0, 0))
             pygame.draw.rect(screen, (125, 125, 125), self.rectangle_controller)
-            pos = mouse.get_pos()
-            self.perfil_button.is_clicked(pos)
-            self.audio_button.is_clicked(pos)
-            self.control_button.is_clicked(pos)
-            self.tela_button.is_clicked(pos)
+
             self.perfil_button.draw(screen)
             self.audio_button.draw(screen)
             self.control_button.draw(screen)
-            self.tela_button.draw(screen)
+
             self.draw_text(screen, "Perfil", self.perfil_button.rect, self.hovered_color)
             self.draw_text(screen, "Audio", self.audio_button.rect, self.hovered_color)
             self.draw_text(screen, "Controles", self.control_button.rect, self.hovered_color)
-            self.draw_text(screen, "Audio", self.tela_button.rect, self.hovered_color)
 
             if self.controller == Controller.PERFIL:
-                self.is_running = self.perfil.update(screen)
+                self.is_running = self.perfil.update(screen, self)
                 if not self.is_running:
                     break
+            if self.controller == Controller.AUDIO:
+                self.is_running = self.audio.update(screen, self)
+                if not self.is_running:
+                    break
+            if self.controller == Controller.CONTROLES:
+                self.is_running = self.controle.update(screen, self)
+                if not self.is_running:
+                    break
+
             pygame.display.update()
 

@@ -17,7 +17,7 @@ class Player:
         pos = Stage.matrix_to_screen_pos(x, y)
         self.position = [pos[0], pos[1]]
         self.power_ups = []
-        self.sprite = pygame.image.load('Assets/player.png')
+        self.sprite = pygame.image.load('Assets/player' + Configuration.get_config().player + '.png')
         self.frame_width = 16
         self.frame_height = 24
         self.frame_index = [0, 0]
@@ -35,7 +35,7 @@ class Player:
         self.morrendo_index = 0
         self.total_morrendo = 6
         self.sound_morrendo = pygame.mixer.Sound('Sounds/on-fire.ogg')
-        self.morrendo_sprite = pygame.image.load('Assets/morrendo.png')
+        self.morrendo_sprite = pygame.image.load('Assets/morrendo' + Configuration.get_config().player + '.png')
 
         self.invincibility_timer = 0
         self.invincibility_max_timer = 0
