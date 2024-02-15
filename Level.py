@@ -29,8 +29,9 @@ class Level:
                 return False
         elif self.game_result == 0:
             resultado.screen_vitoria()
-            Configuration.get_config().level = self.num + 1
-            Configuration.get_config().save_in_file()
+            if Configuration.get_config().level < self.num + 1:
+                Configuration.get_config().level = self.num + 1
+                Configuration.get_config().save_in_file()
             return True
         elif self.game_result == 3:
             pass
@@ -115,7 +116,7 @@ class Level2World1(Level):
             [1, 2, 0, 0, 0, 0, 0, 0, 0, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
             [1, 0, 1, 0, 1, 1, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 2, 1],
-            [1, 3, 1, 0, 1, 1, 0, 2, 17, 2, 1, 0, 1, 0, 1, 0, 1, 2, 1],
+            [1, 0, 1, 0, 1, 1, 0, 2, 17, 2, 1, 0, 1, 0, 1, 0, 1, 2, 1],
             [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1],
             [1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 0, 1, 2, 1],
             [1, 2, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1],

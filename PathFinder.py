@@ -1,7 +1,9 @@
 import math
 import heapq
+import random
 
 import Stage
+from BlockStatus import BlockStatus
 
 
 # Define the Cell class
@@ -26,7 +28,7 @@ def is_valid(row, col):
 
 # Check if a cell is unblocked
 def is_unblocked(grid, row, col, blocked):
-    return grid[row][col] == 0 if blocked else True
+    return (grid[row][col] == 0 or grid[row][col] == BlockStatus.BOMBA) if blocked else True
 
 
 # Check if a cell is the destination
@@ -42,16 +44,17 @@ def calculate_h_value(row, col, dest):
 
 # Implement the A* search algorithm
 def a_star_search(grid, src, dest, blocked=True):
-    best_direction = [0, 0]
+    best_directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     # Check if the source and destination are valid
     if not is_valid(src[0], src[1]) or not is_valid(dest[0], dest[1]):
-        return best_direction
+        i = random.randint(0, len(best_directions) - 1)
+        return best_directions[i]
 
     if blocked:
         # Check if the source and destination are unblocked
         if not is_unblocked(grid, src[0], src[1], blocked) or not is_unblocked(grid, dest[0], dest[1], blocked):
-            print("alguem ta no lugar errado")
-            return [1, 0]
+            i = random.randint(0, len(best_directions) - 1)
+            return best_directions[i]
 
     # Check if we are already at the destination
     if is_destination(src[0], src[1], dest):
@@ -123,7 +126,7 @@ def a_star_search(grid, src, dest, blocked=True):
 
     # If the destination is not found after visiting all cells
     if not found_dest:
-        return best_direction
+        return best_directions[random.randint(0, len(best_directions) - 1)]
 
 
 def path_finder(player_matrix_position, actual_position):

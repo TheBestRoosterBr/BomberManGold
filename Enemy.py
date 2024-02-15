@@ -396,7 +396,7 @@ class Herobrine(Enemy):
         self.player.vidas = 10
         self.heart = pygame.image.load("Assets/heart.png")
         self.player.speed = 3
-        self.player.bomb_power = 10
+        self.player.bomb_power = 20
         self.bomb_counter = 0
         self.position = [12, 12]
 
@@ -414,8 +414,8 @@ class Herobrine(Enemy):
 
     def update(self, screen, player_board_position):
         self.frames += 1
-        self.position = self.player.position
-        new_position = PathFinder.path_finder(player_board_position, self.player.position)
+        self.position = Stage.screen_pos_to_matrix(self.player.position[0], self.player.position[1])
+        new_position = PathFinder.path_finder(player_board_position, self.position)
         if new_position == (0, 1):
             self.player.move_down(self.frames, Stage.stage.board, False)
         if new_position == (0, -1):
