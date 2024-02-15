@@ -28,6 +28,7 @@ class PowerUp:
         self.border_sprite = pygame.image.load('Assets/borders_power_up.png')
         self.frames = 0
         self.position = (x, y)
+        self.sound_Takeitem = pygame.mixer.Sound('Sounds/Take-item.mp3')
 
     def generate_random_powerup(self):
         # Define the weights for each enum member
@@ -50,6 +51,8 @@ class PowerUp:
         screen.blit(spr_bord, (pos[0], pos[1]))
 
     def get_power_up(self, player):
+        self.sound_Takeitem.play()
+        self.sound_Takeitem.set_volume(Configuration.get_config().volume)
         player.disable_caveira()
         if self.num == PowerUpEnum.Foguinho:
             player.bomb_power += 1

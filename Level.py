@@ -215,7 +215,7 @@ class Level4World1(Level):
         ]
 
         Stage.stage.board[self.lucky_block_position[0]][self.lucky_block_position[1]] = BlockStatus.LUCKY_BLOCK
-        pygame.mixer.music.load("Sounds/LevelOne.mp3")
+        pygame.mixer.music.load("Sounds/Level4.mp3")
         pygame.mixer.music.set_volume(Configuration.get_config().volume)
         pygame.mixer.music.play(-1)
 

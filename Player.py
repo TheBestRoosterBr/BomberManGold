@@ -35,9 +35,7 @@ class Player:
         self.morrendo_index = 0
         self.total_morrendo = 6
         self.sound_morrendo = pygame.mixer.Sound('Sounds/on-fire.ogg')
-
         self.morrendo_sprite = pygame.image.load('Assets/morrendo' + Configuration.get_config().player + '.png')
-
         self.sound_Takeitem = pygame.mixer.Sound('Sounds/Take-item.mp3')
         self.sound_colocarbomb = pygame.mixer.Sound('Sounds/put_bomb.mp3')
 
