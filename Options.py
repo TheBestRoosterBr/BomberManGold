@@ -142,9 +142,9 @@ class Controle:
         self.font_path = "./Fonts/nougat.ttf"
         self.font = pygame.font.Font(self.font_path, 40)
 
-        size = (300, 200)
+        size = (400, 300)
         pos_x = Configuration.get_config().screen_width / 2 - size[0] / 2 + 140
-        pos_y = Configuration.get_config().screen_height / 2 - size[1]
+        pos_y = Configuration.get_config().screen_height / 2 - size[1] + 80
         self.rect = pygame.Rect(pos_x, pos_y, size[0], size[1])
         self.image = pygame.image.load('Assets/teclas.png')
 
