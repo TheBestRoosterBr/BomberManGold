@@ -4,6 +4,7 @@ from Enemy import *
 from Game import Game
 from onWinMenu import TelaResultado
 
+
 class Level:
     def __init__(self, num):
         self.enemies = []
@@ -76,8 +77,9 @@ class Level1World1(Level):
         self.enemies.append(flor3)
         self.enemies.append(flor4)
         pygame.mixer.music.load("Sounds/LevelOne.mp3")
-        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.set_volume(Configuration.get_config().volume)
         pygame.mixer.music.play(-1)
+
 
 class Level2World1(Level):
     def __init__(self):
@@ -116,9 +118,8 @@ class Level2World1(Level):
         harem = MuxeguSpawner(12, 12)
         self.enemies.append(harem)
         pygame.mixer.music.load("Sounds/LevelTwon.mp3")
-        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.set_volume(Configuration.get_config().volume)
         pygame.mixer.music.play(-1)
-
 
 
 class Level3World1(Level):
@@ -167,8 +168,5 @@ class Level3World1(Level):
         self.enemies.append(camaleao2)
         self.enemies.append(harem)
         pygame.mixer.music.load("Sounds/LevelTree.mp3")
-        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.set_volume(Configuration.get_config().volume)
         pygame.mixer.music.play(-1)
-
-
-
