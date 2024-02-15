@@ -285,14 +285,13 @@ class Ghost(Enemy):
             self.is_morrendo = True
             self.death_animation = SangueAnimation((self.position[0], self.position[1]))
 
-
         if self.is_morrendo:
             if not self.dead:
                 self.dead = self.death_animation.update(screen)
         else:
             self.frames += 1
             if self.frames % 2 == 0:
-                #my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
+                # my_pos = Stage.screen_pos_to_matrix(self.position[0], self.position[1])
                 pos = PathFinder.path_finder_without_block(player_board_position, my_pos)
                 if pos == (1, 0):
                     self.move_down()
@@ -385,3 +384,19 @@ class Camaleao(Enemy):
         scale_tupla = (sz[0], sz[1] * scale)
         spr = pygame.transform.scale(spr, scale_tupla)
         screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))
+
+
+class SthingCamaleon(Enemy):
+    def __init__(self):
+        super().__init__()
+        self.sprite = pygame.image.load("Assets/boss_mega_men.png")
+        self.sprite_index = 0
+
+    def attack(self):
+        pass
+
+    def update(self, screen, player_board_position):
+        pass
+
+    def draw(self, screen):
+        pass

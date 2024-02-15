@@ -28,8 +28,8 @@ class TelaResultado:
         self.texts_derrota = ["Tela Inicial", "Jogar novamente"]
         self.screen = screen
         self.is_running = True
-        self.draw_ex = self.width / 2
-        self.draw_ey = self.height / 2.5
+        self.draw_ex = self.width / 2.5
+        self.draw_ey = self.height / 1.5
 
     def is_hovered(self, rect):
         mouse_pos = pygame.mouse.get_pos()
