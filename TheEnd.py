@@ -38,7 +38,7 @@ class Fim:
             y_position -= 1  # Ajuste a velocidade de subida alterando este valor
 
             for i in range(len(self.credits_text)):
-                text_surface = self.font.render(self.credits_text[i].strip(), True, (255, 0, 0))
+                text_surface = self.font.render(self.credits_text[i].strip(), True, (255, 255, 255))
                 text_rect = text_surface.get_rect(center=(self.WIDTH // 2, y_position + i * 20))
                 self.screen.blit(text_surface, text_rect)
 
