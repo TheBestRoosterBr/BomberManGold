@@ -5,6 +5,7 @@ from World import World1
 from onWinMenu import TelaResultado
 from Options import Options
 
+
 class ImageButton:
     def __init__(self, x, y, image_path):
         self.rect = pygame.Rect(x, y, 21, 21)
@@ -15,8 +16,6 @@ class ImageButton:
 
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
-
-
 
 
 class MenuPlay:
@@ -37,15 +36,16 @@ class MenuPlay:
         self.texts = ["Carreira", "Multiplayer", "Voltar"]
         self.screen = screen
         self.is_running = True
-        self.draw_x = self.width/2
-        self.draw_y = self.height/2.5
+        self.draw_x = self.width / 2
+        self.draw_y = self.height / 2.5
 
     def draw_text(self, text, x, y, color):
         text_surface = self.font.render(text, True, color)
         text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
-    def draw_rounded_rectangle(self, surface, color, rect, radius, opacity, gradient_color, border_color, border_width, image_path):
+    def draw_rounded_rectangle(self, surface, color, rect, radius, opacity, gradient_color, border_color, border_width,
+                               image_path):
         rect = pygame.Rect(rect)
         alpha_color = color[:3] + (int(opacity * 255),)
 
@@ -73,12 +73,11 @@ class MenuPlay:
 
     def draw_text_center(self, text, y, color, font_size):
         text_surface = self.font_helvetica.render(text, True, color)
-        text_rect = text_surface.get_rect(center=(self.WIDTH//2, y))
+        text_rect = text_surface.get_rect(center=(self.WIDTH // 2, y))
         self.screen.blit(text_surface, text_rect)
 
     def rgb(self, hex_color):
         return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
-
 
     def draw_image(self, surface, image_path, max_dimensions, position):
         if image_path:
@@ -171,15 +170,16 @@ class MenuInicial:
         self.texts = ["Jogar", "Opções", "Sair", ]
         self.screen = screen
         self.is_running = True
-        self.draw_x = self.width/2
-        self.draw_y = self.height/2.5
+        self.draw_x = self.width / 2
+        self.draw_y = self.height / 2.5
 
-    def draw_text(self, text, x, y, color):
-        text_surface = self.font.render(text, True, color)
+    def draw_text(self, text, x, y, color, alpha=255):
+        text_surface = self.font.render(text, True, (*color, alpha))
         text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
-    def draw_rounded_rectangle(self, surface, color, rect, radius, opacity, gradient_color, border_color, border_width, image_path):
+    def draw_rounded_rectangle(self, surface, color, rect, radius, opacity, gradient_color, border_color, border_width,
+                               image_path):
         rect = pygame.Rect(rect)
         alpha_color = color[:3] + (int(opacity * 255),)
 
@@ -207,12 +207,11 @@ class MenuInicial:
 
     def draw_text_center(self, text, y, color, font_size):
         text_surface = self.font_helvetica.render(text, True, color)
-        text_rect = text_surface.get_rect(center=(self.WIDTH//2, y))
+        text_rect = text_surface.get_rect(center=(self.WIDTH // 2, y))
         self.screen.blit(text_surface, text_rect)
 
     def rgb(self, hex_color):
         return tuple(int(hex_color[i:i + 2], 16) for i in (0, 2, 4))
-
 
     def draw_image(self, surface, image_path, max_dimensions, position):
         if image_path:
@@ -249,7 +248,8 @@ class MenuInicial:
                 rect = self.font.render(text, True, self.white).get_rect(center=(self.draw_x, self.draw_y + i * 60))
                 rectangles.append(rect)
                 color = self.hover_color if self.is_hovered(rect) else self.white
-                self.draw_text(text, self.draw_x, self.draw_y + i * 60, color)
+                self.draw_text(text, self.draw_x, self.draw_y + i * 60, self.white, alpha=200)
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -291,4 +291,3 @@ class MenuInicial:
     def is_hovered(rect):
         mouse_pos = pygame.mouse.get_pos()
         return rect.collidepoint(mouse_pos)
-

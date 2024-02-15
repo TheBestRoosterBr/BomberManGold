@@ -72,6 +72,7 @@ class TelaResultado:
                                 self.is_running = False
                             elif i == 1:
                                 # Lógica para "Próximo Nível"
+                                return
                                 pass
             pygame.display.update()
 
@@ -92,5 +93,6 @@ class TelaResultado:
                                 self.is_running = False
                             elif i == 1:
                                 # Lógica para "Jogar Novamente"
-                                pass
+                                return True
             pygame.display.update()
+        return False

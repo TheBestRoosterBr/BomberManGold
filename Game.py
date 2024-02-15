@@ -33,7 +33,6 @@ class Game:
 
 
     def update(self, lucky_block_position=(0, 0)):
-
         self.frames += 1
         pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -91,6 +90,12 @@ class Game:
 
         for enemy in self.enemies:
             if enemy.is_morrendo:
+                if isinstance(enemy, Enemy.GhostSpawner):
+                    for pantarma in enemy.ghosts:
+                        enemy.ghosts.remove(pantarma)
+                if isinstance(enemy, Enemy.MuxeguSpawner):
+                    for batman in enemy.muxegus:
+                        enemy.muxegus.remove(batman)
                 if enemy.dead:
                     self.enemies.remove(enemy)
             else:

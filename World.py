@@ -103,7 +103,12 @@ class World1:
         if self.selected_level == 0:
             self.is_running = True
             self.main_loop()
-        self.levels[self.selected_level - 1].run(self.screen)
+        result = self.levels[self.selected_level - 1].run(self.screen)
+        if result:
+            self.selected_level += 1
+            self.selected_level = self.selected_level % len(self.levels)
+            self.run_level()
+
 
     def main_loop(self):
         while self.is_running:
