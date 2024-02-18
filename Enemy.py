@@ -47,11 +47,15 @@ class Koopa(Enemy):
             if self.frames % 100 == 0:
                 self.index = 0 if self.index == 1 else 1
                 pos = PathFinder.path_finder(player_board_position, self.position)
+
                 self.position[0] += pos[0]
                 self.position[1] += pos[1]
+                self.position[0] = min(max(self.position[0], 0), len(Stage.stage.board)-1)
+                self.position[1] = min(max(self.position[1], 0), len(Stage.stage.board[0])-1)
             self.draw(screen)
 
     def draw(self, screen):
+        #pygame.draw.circle(screen, (255, 0, 0), Stage.matrix_to_screen_pos(self.position[0], self.position[1]), 4)
         spr = self.sprite.subsurface(self.index * 16, 0, 16, 27)
         spr = pygame.transform.scale(spr, Configuration.get_config().cell_size)
         screen.blit(spr, Stage.matrix_to_screen_pos(self.position[0], self.position[1]))

@@ -80,89 +80,54 @@ class Player:
                 board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.PORTAL_ABERTO or
                 board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.PORTAL_FECHADO)
 
-    def move_left(self, frames, board, check_caveira=True):
-
+    def dir_to_state(self, direction):
+        x, y = direction
+        if x == -1 and y == 0:
+            return 0
+        elif x == 1 and y == 0:
+            return 1
+        elif x == 0 and y == -1:
+            return 2
+        elif x == 0 and y == 1:
+            return 3
+        else:
+            return None
+    def move(self, direction, frames, board, check_caveira=True):
+        inverted_direction = tuple(-x for x in direction)
         if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
-            self.move_right(frames, board, check_caveira=False)
+            self.move(inverted_direction, frames, board, check_caveira=False)
             return
-        if self.check_collision((self.position[0] - self.speed, self.position[1]), board, (-1, 0), self):
+        if self.check_collision((self.position[0] + self.speed*direction[0], self.position[1] + self.speed*direction[1]), board, direction, self):
             if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
-                self.position[0] -= 20
+                self.position[0] += 20*direction[0]
+                self.position[1] += 20*direction[1]
             elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
-                self.position[0] -= 1
+                self.position[0] += 1*direction[0]
+                self.position[1] += 1*direction[1]
             else:
-                self.position[0] -= self.speed
+                self.position[0] += self.speed*direction[0]
+                self.position[1] += self.speed*direction[1]
+
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
-            self.frame_index[0] = self.frame_index[0] % 3 + 3
+            self.frame_index[0] = self.frame_index[0] % 3 + (3 if (direction[0] == -1 or direction[1] == 1) else 0)
 
-        self.frame_index[1] = 0
-        self.last_state = 0
+        self.frame_index[1] = 1 if (direction[0] + direction[1]) > 0 else 0
+        self.last_state = self.dir_to_state(direction)
+
+    def move_left(self, frames, board, check_caveira=True):
+        self.move((-1, 0), frames, board, check_caveira)
 
     def move_right(self, frames, board, check_caveira=True):
-        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
-            self.move_left(frames, board, check_caveira=False)
-            return
-
-        if self.check_collision((self.position[0] + self.speed, self.position[1]), board, (1, 0), self):
-
-            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
-                self.position[0] += 20
-            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
-                self.position[0] += 1
-            else:
-                self.position[0] += self.speed
-
-        if frames % 12 == 0:
-            self.frame_index[0] += 1
-            self.frame_index[0] = self.frame_index[0] % 3
-
-        self.frame_index[1] = 1
-        self.last_state = 1
+        self.move((1, 0), frames, board, check_caveira)
 
     def move_up(self, frames, board, check_caveira=True):
-
-        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
-            self.move_down(frames, board, check_caveira=False)
-            return
-
-        if self.check_collision((self.position[0], self.position[1] - self.speed), board, (0, -1), self):
-
-            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
-                self.position[1] -= 20
-            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
-                self.position[1] -= 1
-            else:
-                self.position[1] -= self.speed
-
-        if frames % 12 == 0:
-            self.frame_index[0] += 1
-            self.frame_index[0] = self.frame_index[0] % 3
-
-        self.frame_index[1] = 0
-        self.last_state = 2
+        self.move((0, -1), frames, board, check_caveira)
 
     def move_down(self, frames, board, check_caveira=True):
+        self.move((0, 1), frames, board, check_caveira)
 
-        if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
-            self.move_up(frames, board, check_caveira=False)
-            return
-
-        if self.check_collision((self.position[0], self.position[1] + self.speed), board, (0, 1), self):
-
-            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
-                self.position[1] += 20
-            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
-                self.position[1] += 1
-            else:
-                self.position[1] += self.speed
-
-        if frames % 12 == 0:
-            self.frame_index[0] += 1
-            self.frame_index[0] = self.frame_index[0] % 3 + 3
-        self.frame_index[1] = 1
-        self.last_state = 3
 
     def stop(self):
         if self.last_state == 0:
@@ -304,6 +269,9 @@ class Player:
         return 0
 
     def draw(self, screen, frames):
+
+        #pygame.draw.circle(screen, (255, 0, 0), (self.position[0], self.position[1]), 4)
+
         if self.is_invincible and frames % 15 > 7:
             return
         if not self.is_morrendo or self.vidas > 0:
