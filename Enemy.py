@@ -268,7 +268,7 @@ class Ghost(Enemy):
                 self.index[0] = 0
 
         self.position[1] -= 1
-        self.index[1] = 2
+        self.index[1] = 3
 
     def move_down(self):
         if self.frames % 10 == 0:
@@ -277,7 +277,7 @@ class Ghost(Enemy):
                 self.index[0] = 0
 
         self.position[1] += 1
-        self.index[1] = 3
+        self.index[1] = 2
 
     def update(self, screen, player_board_position):
 
