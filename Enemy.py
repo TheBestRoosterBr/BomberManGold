@@ -28,7 +28,7 @@ class Enemy:
 class Koopa(Enemy):
     def __init__(self, x, y):
         super().__init__()
-        self.sprite = pygame.image.load('Assets\Koopa.png')
+        self.sprite = pygame.image.load('Assets/Koopa.png')
         self.index = 0
         self.position = [x, y]
         self.death_animation = None

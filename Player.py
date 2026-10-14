@@ -1,4 +1,5 @@
 import random
+import math
 
 import pygame
 
@@ -66,19 +67,59 @@ class Player:
         }
 
     @staticmethod
-    def check_collision(next_position, board, direction, player):
-        matrix_pos = Stage.screen_pos_to_matrix_movimentation(next_position[0], next_position[1], player.position,
-                                                              direction)
-        if board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.BOMBA:
-            for bomba in player.bombs:
-                if bomba.position == Stage.screen_pos_to_matrix(player.position[0], player.position[1]):
-                    return True
+    def is_tile_passable(board, i, j, player):
+        if i < 0 or i >= len(board) or j < 0 or j >= len(board[0]):
+            return False
+        status = board[i][j]
+        if status == BlockStatus.CLEAR:
+            return True
+        if BlockStatus.POWER_UP <= status <= BlockStatus.POWER_UP + 9:
+            return True
+        if status in (BlockStatus.CHAVE, BlockStatus.PORTAL_ABERTO, BlockStatus.PORTAL_FECHADO, BlockStatus.FIRE):
+            return True
+        if status == BlockStatus.BOMBA:
+            config = Configuration.get_config()
+            cell_size = config.cell_size[0]
+            tile_rect = pygame.Rect(
+                int(j * cell_size + config.offset_x),
+                int(i * cell_size + config.offset_y),
+                cell_size,
+                cell_size
+            )
+            curr_rect = pygame.Rect(
+                int(round(player.position[0])),
+                int(round(player.position[1])),
+                cell_size,
+                cell_size
+            )
+            return curr_rect.colliderect(tile_rect)
+        return False
 
-        return (board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CLEAR or
-                BlockStatus.POWER_UP <= board[int(matrix_pos[0])][int(matrix_pos[1])] <= BlockStatus.POWER_UP + 9 or
-                board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.CHAVE or
-                board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.PORTAL_ABERTO or
-                board[int(matrix_pos[0])][int(matrix_pos[1])] == BlockStatus.PORTAL_FECHADO)
+    @staticmethod
+    def can_move_to(pos, board, player):
+        config = Configuration.get_config()
+        cell_size = config.cell_size[0]
+        offset_x = config.offset_x
+        offset_y = config.offset_y
+
+        px, py = pos
+        px_off = px - offset_x
+        py_off = py - offset_y
+
+        min_j = int(math.floor(px_off / cell_size))
+        max_j = int(math.floor((px_off + cell_size - 0.001) / cell_size))
+        min_i = int(math.floor(py_off / cell_size))
+        max_i = int(math.floor((py_off + cell_size - 0.001) / cell_size))
+
+        for i in range(min_i, max_i + 1):
+            for j in range(min_j, max_j + 1):
+                if not Player.is_tile_passable(board, i, j, player):
+                    return False
+        return True
+
+    @staticmethod
+    def check_collision(next_position, board, direction, player):
+        return Player.can_move_to(next_position, board, player)
 
     def dir_to_state(self, direction):
         x, y = direction
@@ -92,22 +133,82 @@ class Player:
             return 3
         else:
             return None
+
     def move(self, direction, frames, board, check_caveira=True):
         inverted_direction = tuple(-x for x in direction)
         if check_caveira and self.caveira['enabled'] and self.caveira['type'] == 'inverter':
             self.move(inverted_direction, frames, board, check_caveira=False)
             return
-        if self.check_collision((self.position[0] + self.speed*direction[0], self.position[1] + self.speed*direction[1]), board, direction, self):
-            if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
-                self.position[0] += 20*direction[0]
-                self.position[1] += 20*direction[1]
-            elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
-                self.position[0] += 1*direction[0]
-                self.position[1] += 1*direction[1]
-            else:
-                self.position[0] += self.speed*direction[0]
-                self.position[1] += self.speed*direction[1]
 
+        if self.caveira['enabled'] and self.caveira['type'] == 'speed_up':
+            effective_speed = 20
+        elif self.caveira['enabled'] and self.caveira['type'] == 'speed_down':
+            effective_speed = 1
+        else:
+            effective_speed = self.speed
+
+        dx, dy = direction
+        config = Configuration.get_config()
+        cell_size = config.cell_size[0]
+        offset_x = config.offset_x
+        offset_y = config.offset_y
+
+        remaining = effective_speed
+        while remaining > 0:
+            step = min(remaining, 2)
+            new_x = self.position[0] + dx * step
+            new_y = self.position[1] + dy * step
+
+            if Player.can_move_to((new_x, new_y), board, self):
+                self.position[0] = new_x
+                self.position[1] = new_y
+                remaining -= step
+            else:
+                if step > 1 and Player.can_move_to((self.position[0] + dx, self.position[1] + dy), board, self):
+                    self.position[0] += dx
+                    self.position[1] += dy
+                    remaining -= 1
+                    continue
+
+                max_slide = cell_size * 0.45
+                slide_applied = False
+                if dx != 0 and dy == 0:
+                    target_row = int(round((self.position[1] - offset_y) / cell_size))
+                    target_y = target_row * cell_size + offset_y
+                    diff_y = target_y - self.position[1]
+                    if 0 < abs(diff_y) <= max_slide:
+                        target_col = int(round((self.position[0] - offset_x) / cell_size)) + dx
+                        if Player.is_tile_passable(board, target_row, target_col, self):
+                            step_y = math.copysign(min(step, abs(diff_y)), diff_y)
+                            if Player.can_move_to((new_x, self.position[1] + step_y), board, self):
+                                self.position[0] = new_x
+                                self.position[1] += step_y
+                                slide_applied = True
+                                remaining -= step
+                            elif Player.can_move_to((self.position[0], self.position[1] + step_y), board, self):
+                                self.position[1] += step_y
+                                slide_applied = True
+                                remaining -= step
+                elif dy != 0 and dx == 0:
+                    target_col = int(round((self.position[0] - offset_x) / cell_size))
+                    target_x = target_col * cell_size + offset_x
+                    diff_x = target_x - self.position[0]
+                    if 0 < abs(diff_x) <= max_slide:
+                        target_row = int(round((self.position[1] - offset_y) / cell_size)) + dy
+                        if Player.is_tile_passable(board, target_row, target_col, self):
+                            step_x = math.copysign(min(step, abs(diff_x)), diff_x)
+                            if Player.can_move_to((self.position[0] + step_x, new_y), board, self):
+                                self.position[0] += step_x
+                                self.position[1] = new_y
+                                slide_applied = True
+                                remaining -= step
+                            elif Player.can_move_to((self.position[0] + step_x, self.position[1]), board, self):
+                                self.position[0] += step_x
+                                slide_applied = True
+                                remaining -= step
+
+                if not slide_applied:
+                    break
 
         if frames % 12 == 0:
             self.frame_index[0] += 1
